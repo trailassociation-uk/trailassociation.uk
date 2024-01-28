@@ -80,15 +80,15 @@
 
 	<div class="flex items-center md:order-2">
 		{#if $user}
-			<Avatar id="avatar-menu" src={pb.getFileUrl($user, $user?.avatar)} class="mx-6" />
+			<Avatar id="avatar-menu" src={pb.getFileUrl($user, $user?.avatar)} class="mx-6 hover:cursor-pointer" />
 
 			<Dropdown placement="bottom" triggeredBy="#avatar-menu">
 				<DropdownHeader>
 					<span class="block text-sm">{$user?.name}</span>
 					<span class="block truncate text-sm font-medium">{$user?.email}</span>
 				</DropdownHeader>
-				<DropdownItem>Dashboard</DropdownItem>
-				<DropdownItem>Settings</DropdownItem>
+				<DropdownItem href="/manage-associations">Manage Associations</DropdownItem>
+				<DropdownItem href="/settings">Settings</DropdownItem>
 				<DropdownDivider />
 				<DropdownItem on:click={logout}>Sign out</DropdownItem>
 			</Dropdown>
