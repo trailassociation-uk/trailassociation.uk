@@ -20,10 +20,10 @@
     usersEmail = pb.authStore.model?.email;
   });
 
-  async function handleSubmit(e) {
-    e.target.checkValidity();
+  async function handleSubmit(e: SubmitEvent) {
+    (e.target as HTMLFormElement)?.checkValidity();
 
-    const formData = new FormData(e.target);
+    const formData = new FormData(e.target as HTMLFormElement);
 
     await pb.collection("maintainers").update($user?.id, formData);
 

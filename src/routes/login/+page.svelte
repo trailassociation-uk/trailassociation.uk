@@ -11,8 +11,8 @@
     goto("/");
   }
 
-  async function login(e) {
-    const formData = new FormData(e.target);
+  async function login(e: SubmitEvent) {
+    const formData = new FormData(e.target as HTMLFormElement);
 
     const { record, token } = await pb
       .collection("maintainers")

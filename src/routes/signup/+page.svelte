@@ -11,8 +11,10 @@
     goto("/");
   }
 
-  async function create(e) {
-    const user = await pb.collection("maintainers").create(new FormData(e.target));
+  async function create(e: SubmitEvent) {
+    const user = await pb
+      .collection("maintainers")
+      .create(new FormData(e.target as HTMLFormElement));
 
     if (user) {
       goto("/");
