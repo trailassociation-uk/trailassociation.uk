@@ -1,0 +1,29 @@
+app = "trailassociation-uk-pocketbase"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[mounts]
+  source = "pb_data"
+  destination = "/pb/pb_data"
+
+[build.args]
+  PB_VERSION="0.20.7"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 500
+    hard_limit = 600
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
