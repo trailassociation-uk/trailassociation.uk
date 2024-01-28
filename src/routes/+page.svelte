@@ -34,8 +34,5 @@
         >Find out more</Button
       >
     </a>
-    <Button on:click={test} size="xl" color="red" class="mr-3 inline-flex items-center justify-center"
-      >Test</Button
-    >
   </HeroHeader>
 </div>
