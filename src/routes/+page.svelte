@@ -1,15 +1,6 @@
 <script>
-  import { HeroHeader } from 'flowbite-svelte-blocks';
-  import { Button } from 'flowbite-svelte';
-
-	import { pb, user } from '$lib/pocketbase';
-
-  function test() {
-    pb.collection("associations").update("0a698f66wd2356d", {"subdomain": "test"})
-
-  }
-
-
+  import { HeroHeader } from "flowbite-svelte-blocks";
+  import { Button } from "flowbite-svelte";
 </script>
 
 <div
