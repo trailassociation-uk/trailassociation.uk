@@ -12,13 +12,7 @@
 	}
 
 	async function create(e) {
-		const formData = new FormData(e.target);
-
-		const user = await pb.collection('maintainers').create({
-			email: formData.get('email'),
-			password: formData.get('password'),
-			passwordConfirm: formData.get('confirm-password')
-		});
+		const user = await pb.collection('maintainers').create(new FormData(e.target));
 
 		if (user) {
 			goto('/');
@@ -56,7 +50,7 @@
 							<span>Confirm password</span>
 							<Input
 								type="password"
-								name="confirm-password"
+								name="passwordConfirm"
 								placeholder="•••••••••••••••"
 								required
 							/>
