@@ -1,2 +1,44 @@
+<script setup lang="ts">
+import { Button } from '@/components/ui/button'
+import Header from '@/components/app/header.vue'
+import Footer from '@/components/app/footer.vue'
+</script>
+
 <template>
+  <div class="flex min-h-screen flex-col bg-black text-white">
+    <Header />
+    <main
+      class="relative flex flex-1 flex-col items-center justify-center bg-cover bg-center bg-no-repeat px-4 pt-16"
+      :style="{ backgroundImage: 'url(https://images.unsplash.com/photo-1615406308854-4805ac35ef25?q=80)' }"
+    >
+      <div class="absolute inset-0 bg-black/50" aria-hidden="true" />
+      <div class="relative z-10 mx-auto max-w-3xl text-center">
+        <h1 class="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+          Riders unite, trails thrive!
+        </h1>
+        <p class="mt-6 text-lg text-white/90 sm:text-xl">
+          Whether you're forming a new association or boosting your existing crew, we're your sidekick every step of the way.
+        </p>
+        <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button
+            as="a"
+            href="/get-started"
+            size="lg"
+            variant="default"
+          >
+            Get started
+          </Button>
+          <Button
+            as="a"
+            href="/about"
+            size="lg"
+            variant="secondary"
+          >
+            Find out more
+          </Button>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
 </template>
