@@ -19,7 +19,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "format": "biome format --write && biome lint --write",
+    "format": "biome format --write && biome lint --write && bunx biome check --fix",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"

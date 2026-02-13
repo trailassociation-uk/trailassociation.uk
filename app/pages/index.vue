@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import Header from "@/components/app/header.vue";
 import Footer from "@/components/app/footer.vue";
+import Header from "@/components/app/header.vue";
+import { Button } from "@/components/ui/button";
 </script>
 
 <template>

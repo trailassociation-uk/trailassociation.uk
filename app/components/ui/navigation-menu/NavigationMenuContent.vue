@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type {
-	NavigationMenuContentEmits,
-	NavigationMenuContentProps,
-} from "reka-ui";
-import type { HTMLAttributes } from "vue";
 import { reactiveOmit } from "@vueuse/core";
+import type {
+  NavigationMenuContentEmits,
+  NavigationMenuContentProps,
+} from "reka-ui";
 import { NavigationMenuContent, useForwardPropsEmits } from "reka-ui";
+import type { HTMLAttributes } from "vue";
 import { cn } from "@/lib/utils";
 
 const props = defineProps<
-	NavigationMenuContentProps & { class?: HTMLAttributes["class"] }
+  NavigationMenuContentProps & { class?: HTMLAttributes["class"] }
 >();
 const emits = defineEmits<NavigationMenuContentEmits>();
 
@@ -19,7 +19,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
 
 <template>
-  <NavigationMenuContent
+    <NavigationMenuContent
     data-slot="navigation-menu-content"
     v-bind="forwarded"
     :class="cn(
