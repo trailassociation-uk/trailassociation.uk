@@ -1,0 +1,29 @@
+# Dependencies (installed in container)
+node_modules
+
+# Nuxt dev/build outputs (built in container)
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Git
+.git
+.gitignore
+
+# IDE and OS
+.DS_Store
+.fleet
+.idea
+*.log
+
+# Local env (use build args or runtime env instead)
+.env
+.env.*
+!.env.example
+
+# Documentation and misc
+README.md
+*.md
