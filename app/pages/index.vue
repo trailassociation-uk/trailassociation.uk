@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import Header from '@/components/app/header.vue'
-import Footer from '@/components/app/footer.vue'
+import { Button } from "@/components/ui/button";
+import Header from "@/components/app/header.vue";
+import Footer from "@/components/app/footer.vue";
 </script>
 
 <template>
@@ -22,19 +22,19 @@ import Footer from '@/components/app/footer.vue'
         <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
             as="a"
-            href="/get-started"
+            href="/"
             size="lg"
             variant="default"
           >
-            Get started
+            Find trails
           </Button>
           <Button
             as="a"
-            href="/about"
+            href="/"
             size="lg"
             variant="secondary"
           >
-            Find out more
+            No dig, no ride
           </Button>
         </div>
       </div>

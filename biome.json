@@ -1,0 +1,10 @@
+{
+  "files": {
+    "includes": ["app/**/*.ts", "server/**/*.ts"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentWidth": 2,
+    "indentStyle": "space"
+  }
+}

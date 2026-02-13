@@ -1,0 +1,9 @@
+{
+  "task.allowAutomaticTasks": "on",
+  "[typescript]": {
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.tabSize": 2
+  },
+}
