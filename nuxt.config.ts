@@ -3,6 +3,14 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
+  runtimeConfig: {
+    session: {
+      password: process.env.NUXT_SESSION_PASSWORD!,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   app: {
     head: {
       title: 'Trail Association UK', // default fallback title

@@ -30,12 +30,7 @@ async function onSubmit() {
     await refreshSession();
     await navigateTo("/");
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "data" in e) {
-      const data = (e as { data?: { message?: string } }).data;
-      error.value = data?.message ?? "Something went wrong. Please try again.";
-    } else {
-      error.value = "Something went wrong. Please try again.";
-    }
+    error.value = "Something went wrong. Please try again.";
   } finally {
     loading.value = false;
   }
@@ -56,9 +51,7 @@ async function onSubmit() {
       </div>
 
       <form class="space-y-6" @submit.prevent="onSubmit">
-        <p v-if="error" class="text-sm text-destructive" role="alert">
-          {{ error }}
-        </p>
+
 
         <Field>
           <FieldGroup>
@@ -88,6 +81,10 @@ async function onSubmit() {
         <Button type="submit" class="w-full" :disabled="loading">
           {{ loading ? "Creating account..." : "Sign up" }}
         </Button>
+
+        <p v-if="error" class="text-sm text-destructive" role="alert">
+          {{ error }}
+        </p>
       </form>
     </div>
   </main>

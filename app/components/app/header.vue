@@ -7,13 +7,8 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import UserMenu from "@/components/app/user-menu.vue";
 
-const { user } = useUserSession();
-
-async function logout(clear: () => Promise<void>) {
-  await clear();
-  await navigateTo("/login");
-}
 </script>
 
 <template>
@@ -40,22 +35,7 @@ async function logout(clear: () => Promise<void>) {
       </NavigationMenu>
 
       <div class="flex items-center gap-4">
-        <AuthState v-slot="{ loggedIn, clear: clearSession }">
-          <template v-if="!loggedIn">
-            <Button as="NuxtLink" to="/login" variant="ghost">
-              Login
-            </Button>
-            <Button as="NuxtLink" to="/signup" variant="default">
-              Sign up
-            </Button>
-          </template>
-          <template v-else>
-            <span class="text-sm text-muted-foreground">{{ user?.email }}</span>
-            <Button variant="ghost" @click="logout(clearSession)">
-              Logout
-            </Button>
-          </template>
-        </AuthState>
+        <UserMenu />
       </div>
     </div>
   </header>

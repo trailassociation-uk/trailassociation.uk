@@ -33,18 +33,10 @@ export default defineEventHandler(async (event) => {
     });
 
     return { success: true };
-  } catch (err) {
-    if (
-      err &&
-      typeof err === "object" &&
-      "code" in err &&
-      err.code === "23505"
-    ) {
-      throw createError({
-        statusCode: 409,
-        message: "An account with this email already exists",
-      });
-    }
-    throw err;
+  } catch {
+    throw createError({
+      statusCode: 500,
+      message: "Something went wrong",
+    });
   }
 });
