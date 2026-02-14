@@ -1,6 +1,6 @@
 {
   "files": {
-    "includes": ["app/**/*.{ts,vue}", "server/**/*.ts"]
+    "includes": ["app/**/*.ts", "server/**/*.ts"]
   },
   "formatter": {
     "enabled": true,
