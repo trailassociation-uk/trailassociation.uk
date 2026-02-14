@@ -7,8 +7,14 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-</script>
 
+const { user } = useUserSession();
+
+async function logout(clear: () => Promise<void>) {
+  await clear();
+  await navigateTo("/login");
+}
+</script>
 
 <template>
   <header class="fixed top-0 left-0 right-0 z-50 border-b border-foreground bg-background backdrop-blur">
@@ -21,12 +27,12 @@ import {
       <NavigationMenu class="hidden md:flex">
         <NavigationMenuList class="flex gap-1">
           <NavigationMenuItem>
-            <NavigationMenuLink href="/" >
+            <NavigationMenuLink href="/">
               About
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <NavigationMenuLink href="/" >
+            <NavigationMenuLink href="/">
               Associations
             </NavigationMenuLink>
           </NavigationMenuItem>
@@ -34,9 +40,22 @@ import {
       </NavigationMenu>
 
       <div class="flex items-center gap-4">
-        <Button as="a" href="/" variant="ghost">
-          Login
-        </Button>
+        <AuthState v-slot="{ loggedIn, clear: clearSession }">
+          <template v-if="!loggedIn">
+            <Button as="NuxtLink" to="/login" variant="ghost">
+              Login
+            </Button>
+            <Button as="NuxtLink" to="/signup" variant="default">
+              Sign up
+            </Button>
+          </template>
+          <template v-else>
+            <span class="text-sm text-muted-foreground">{{ user?.email }}</span>
+            <Button variant="ghost" @click="logout(clearSession)">
+              Logout
+            </Button>
+          </template>
+        </AuthState>
       </div>
     </div>
   </header>

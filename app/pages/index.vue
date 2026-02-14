@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import Footer from "@/components/app/footer.vue";
-import Header from "@/components/app/header.vue";
 import { Button } from "@/components/ui/button";
 </script>
 
 <template>
-  <Header />
   <main class="relative flex flex-1 flex-col items-center justify-center bg-cover bg-center bg-no-repeat px-4 pt-16"
     :style="{ backgroundImage: 'url(https://images.unsplash.com/photo-1615406308854-4805ac35ef25?q=80)' }">
     <div class="absolute inset-0 bg-foreground/50" aria-hidden="true" />
@@ -27,5 +24,4 @@ import { Button } from "@/components/ui/button";
       </div>
     </div>
   </main>
-  <Footer />
 </template>

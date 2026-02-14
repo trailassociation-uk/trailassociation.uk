@@ -15,7 +15,7 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: true },
-  modules: ['shadcn-nuxt'],
+  modules: ['shadcn-nuxt', 'nuxt-auth-utils'],
   shadcn: {
     prefix: '',
     componentDir: '@/components/ui'
