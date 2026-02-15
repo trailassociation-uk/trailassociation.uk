@@ -47,11 +47,15 @@ const profileIconIndex = computed(() => {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <NuxtLink to="/profile">Profile</NuxtLink>
+            <DropdownMenuItem as-child>
+              <NuxtLink to="/profile" class="cursor-pointer">Profile</NuxtLink>
             </DropdownMenuItem>
             <DropdownMenuItem as-child>
-              <NuxtLink to="/" @click="clear">Logout</NuxtLink>
+              <NuxtLink to="/my-associations" class="cursor-pointer">My associations</NuxtLink>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem as-child>
+              <NuxtLink to="/" @click="clear" class="cursor-pointer">Logout</NuxtLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

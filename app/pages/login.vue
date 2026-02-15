@@ -54,10 +54,6 @@ async function onSubmit() {
       </div>
 
       <form class="space-y-6" @submit.prevent="onSubmit">
-        <p v-if="error" class="text-sm text-destructive" role="alert">
-          {{ error }}
-        </p>
-
         <Field>
           <FieldGroup>
             <FieldLabel>Email</FieldLabel>
@@ -76,6 +72,10 @@ async function onSubmit() {
         <Button type="submit" class="w-full" :disabled="loading">
           {{ loading ? "Signing in..." : "Sign in" }}
         </Button>
+
+        <p v-if="error" class="text-sm text-destructive" role="alert">
+          {{ error }}
+        </p>
       </form>
     </div>
   </main>
