@@ -1,7 +1,6 @@
-import { eq } from "drizzle-orm";
+import { ObjectId } from "mongodb";
 import { z } from "zod";
-import { db } from "../../db";
-import { usersTable } from "../../db/schema";
+import { getDb } from "../../db";
 
 const bodySchema = z.object({
   currentPassword: z.string().min(8),
@@ -15,16 +14,12 @@ export default defineEventHandler(async (event) => {
     bodySchema.parse,
   );
 
-  const [dbUser] = await db
-    .select({ passwordHash: usersTable.passwordHash })
-    .from(usersTable)
-    .where(eq(usersTable.id, user.id))
-    .limit(1);
+  const db = await getDb();
+  const dbUser = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(user.id) }, { projection: { passwordHash: 1 } });
 
-  if (
-    !dbUser ||
-    !(await verifyPassword(dbUser.passwordHash, currentPassword))
-  ) {
+  if (!dbUser || !(await verifyPassword(dbUser.passwordHash, currentPassword))) {
     throw createError({
       statusCode: 401,
       message: "Current password is incorrect",
@@ -34,9 +29,8 @@ export default defineEventHandler(async (event) => {
   const passwordHash = await hashPassword(newPassword);
 
   await db
-    .update(usersTable)
-    .set({ passwordHash })
-    .where(eq(usersTable.id, user.id));
+    .collection("users")
+    .updateOne({ _id: new ObjectId(user.id) }, { $set: { passwordHash } });
 
   return { success: true };
 });

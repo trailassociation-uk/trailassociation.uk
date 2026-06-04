@@ -1,6 +1,6 @@
+import { MongoServerError } from "mongodb";
 import { z } from "zod";
-import { db } from "../../db";
-import { usersTable } from "../../db/schema";
+import { getDb } from "../../db";
 
 const bodySchema = z
   .object({
@@ -17,26 +17,22 @@ export default defineEventHandler(async (event) => {
   const { email, password } = await readValidatedBody(event, bodySchema.parse);
 
   const passwordHash = await hashPassword(password);
+  const db = await getDb();
 
   try {
-    const [user] = await db
-      .insert(usersTable)
-      .values({ email, passwordHash })
-      .returning({ id: usersTable.id, email: usersTable.email });
-
-    if (!user) {
-      throw createError({ statusCode: 500, message: "Failed to create user" });
-    }
+    const result = await db
+      .collection("users")
+      .insertOne({ email, passwordHash });
 
     await setUserSession(event, {
-      user: { id: user.id, email: user.email },
+      user: { id: result.insertedId.toString(), email },
     });
 
     return { success: true };
-  } catch {
-    throw createError({
-      statusCode: 500,
-      message: "Something went wrong",
-    });
+  } catch (err) {
+    if (err instanceof MongoServerError && err.code === 11000) {
+      throw createError({ statusCode: 409, message: "Email already in use" });
+    }
+    throw createError({ statusCode: 500, message: "Something went wrong" });
   }
 });

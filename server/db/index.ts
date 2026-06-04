@@ -1,8 +1,16 @@
 import "dotenv/config";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { MongoClient, type Db } from "mongodb";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set");
+if (!process.env.MONGO_CONNECTION_STRING) {
+  throw new Error("MONGO_CONNECTION_STRING is not set");
 }
 
-export const db = drizzle(process.env.DATABASE_URL);
+const client = new MongoClient(process.env.MONGO_CONNECTION_STRING);
+let _db: Db | null = null;
+
+export async function getDb(): Promise<Db> {
+  if (_db) return _db;
+  await client.connect();
+  _db = client.db("trailassociation");
+  return _db;
+}

@@ -1,7 +1,6 @@
-import { and, eq, ne } from "drizzle-orm";
+import { ObjectId } from "mongodb";
 import { z } from "zod";
-import { db } from "../../db";
-import { usersTable } from "../../db/schema";
+import { getDb } from "../../db";
 
 const bodySchema = z.object({
   email: z.email(),
@@ -11,11 +10,11 @@ export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
   const { email } = await readValidatedBody(event, bodySchema.parse);
 
-  const [existing] = await db
-    .select({ id: usersTable.id })
-    .from(usersTable)
-    .where(and(eq(usersTable.email, email), ne(usersTable.id, user.id)))
-    .limit(1);
+  const db = await getDb();
+
+  const existing = await db
+    .collection("users")
+    .findOne({ email, _id: { $ne: new ObjectId(user.id) } });
 
   if (existing) {
     throw createError({
@@ -24,13 +23,11 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const [updated] = await db
-    .update(usersTable)
-    .set({ email })
-    .where(eq(usersTable.id, user.id))
-    .returning({ id: usersTable.id, email: usersTable.email });
+  const result = await db
+    .collection("users")
+    .updateOne({ _id: new ObjectId(user.id) }, { $set: { email } });
 
-  if (!updated) {
+  if (result.matchedCount === 0) {
     throw createError({
       statusCode: 500,
       message: "Failed to update email",
@@ -38,7 +35,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await setUserSession(event, {
-    user: { id: updated.id, email: updated.email },
+    user: { id: user.id, email },
   });
 
   return { success: true };

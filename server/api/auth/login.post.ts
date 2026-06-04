@@ -1,7 +1,5 @@
-import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { db } from "../../db";
-import { usersTable } from "../../db/schema";
+import { getDb } from "../../db";
 
 const bodySchema = z.object({
   email: z.email(),
@@ -11,11 +9,8 @@ const bodySchema = z.object({
 export default defineEventHandler(async (event) => {
   const { email, password } = await readValidatedBody(event, bodySchema.parse);
 
-  const [user] = await db
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.email, email))
-    .limit(1);
+  const db = await getDb();
+  const user = await db.collection("users").findOne({ email });
 
   if (!user || !(await verifyPassword(user.passwordHash, password))) {
     throw createError({
@@ -25,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await setUserSession(event, {
-    user: { id: user.id, email: user.email },
+    user: { id: user._id.toString(), email: user.email },
   });
 
   return { success: true };

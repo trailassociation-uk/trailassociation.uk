@@ -1,15 +1,16 @@
-import { eq } from "drizzle-orm";
-import { db } from "../db";
-import { usersTable } from "../db/schema";
+import { ObjectId } from "mongodb";
+import { getDb } from "../db";
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
 
-  const [profile] = await db
-    .select({ id: usersTable.id, email: usersTable.email })
-    .from(usersTable)
-    .where(eq(usersTable.id, user.id))
-    .limit(1);
+  const db = await getDb();
+  const profile = await db
+    .collection("users")
+    .findOne(
+      { _id: new ObjectId(user.id) },
+      { projection: { _id: 1, email: 1 } },
+    );
 
   if (!profile) {
     throw createError({
@@ -18,5 +19,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return profile;
+  return { id: profile._id.toString(), email: profile.email };
 });
