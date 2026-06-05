@@ -31,5 +31,5 @@ export async function getAssociationBySubdomain(
   subdomain: string,
 ): Promise<Association | null> {
   const db = await getDb();
-  return db.collection<Association>("associations").findOne({ subdomain });
+  return db.collection<Association>("associations").findOne({ slug: subdomain });
 }
