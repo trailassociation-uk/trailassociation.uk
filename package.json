@@ -1,5 +1,8 @@
 {
   "name": "trailassociation-uk",
+  "imports": {
+    "#shared/*": "./shared/*.ts"
+  },
   "dependencies": {
     "@vueuse/core": "^14.2.1",
     "class-variance-authority": "^0.7.1",

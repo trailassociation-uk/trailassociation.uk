@@ -18,8 +18,8 @@ describe("extractSubdomain", () => {
     expect(extractSubdomain("trailassociation.uk", APEX)).toBeNull();
   });
 
-  it("returns null for a www subdomain", () => {
-    expect(extractSubdomain("www.trailassociation.uk", APEX)).toBeNull();
+  it("returns www for a www subdomain (reserved handling is the caller's concern)", () => {
+    expect(extractSubdomain("www.trailassociation.uk", APEX)).toBe("www");
   });
 
   it("strips the port before extracting", () => {

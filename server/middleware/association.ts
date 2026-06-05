@@ -1,3 +1,4 @@
+import { isReservedSubdomain } from "#shared/reserved-subdomains";
 import {
   extractSubdomain,
   getAssociationBySubdomain,
@@ -10,8 +11,14 @@ export default defineEventHandler(async (event) => {
   const host = getRequestHost(event, { xForwardedHost: true });
   const subdomain = extractSubdomain(host, appHost);
 
-  // Apex host (or `www`) — no association context.
+  // Apex host — no association context.
   if (!subdomain) return;
+
+  // Platform-reserved subdomains (`api`, `app`, …) belong to the platform, not
+  // an association — leave the association context empty rather than treating
+  // them as an unknown association (404). A reserved slug can never be claimed
+  // (see `validateSubdomain`), so this also short-circuits the DB lookup.
+  if (isReservedSubdomain(subdomain)) return;
 
   const association = await getAssociationBySubdomain(subdomain);
 

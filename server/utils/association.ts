@@ -1,62 +1,10 @@
+import { isReservedSubdomain } from "#shared/reserved-subdomains";
 import type { Association } from "#shared/types/association";
 import { getDb } from "../db";
 
 /** Min/max length for an association subdomain label. */
 export const SUBDOMAIN_MIN_LENGTH = 3;
 export const SUBDOMAIN_MAX_LENGTH = 63;
-
-/**
- * Subdomains that are reserved for the platform and may never be claimed by an
- * association. Keep `www` here in sync with the apex/`www` handling in
- * {@link extractSubdomain} and the dev hosts script.
- */
-export const RESERVED_SUBDOMAINS = new Set([
-  "www",
-  "api",
-  "app",
-  "admin",
-  "dashboard",
-  "account",
-  "accounts",
-  "auth",
-  "login",
-  "signup",
-  "logout",
-  "profile",
-  "settings",
-  "mail",
-  "email",
-  "smtp",
-  "imap",
-  "ftp",
-  "ns",
-  "ns1",
-  "ns2",
-  "dns",
-  "blog",
-  "docs",
-  "doc",
-  "help",
-  "support",
-  "status",
-  "about",
-  "contact",
-  "billing",
-  "static",
-  "assets",
-  "cdn",
-  "img",
-  "images",
-  "media",
-  "files",
-  "test",
-  "staging",
-  "dev",
-  "demo",
-  "internal",
-  "system",
-  "trailassociation",
-]);
 
 // Lowercase, URL-safe label: starts/ends with an alphanumeric and may contain
 // hyphens in between. No consecutive constraints beyond a single contiguous
@@ -80,7 +28,7 @@ export function validateSubdomain(subdomain: string): string | null {
   if (!SUBDOMAIN_PATTERN.test(subdomain)) {
     return "Subdomain may only contain lowercase letters, numbers, and hyphens, and must start and end with a letter or number.";
   }
-  if (RESERVED_SUBDOMAINS.has(subdomain)) {
+  if (isReservedSubdomain(subdomain)) {
     return "That subdomain is reserved.";
   }
   return null;
@@ -95,8 +43,8 @@ export function normalizeSubdomain(value: string): string {
  * Extract the association subdomain from a request host.
  *
  * - Strips the port and lowercases the host.
- * - Returns `null` for the apex host, a `www` subdomain, or any host that does
- *   not sit under the configured apex (e.g. an IP address or internal hostname).
+ * - Returns `null` for the apex host or any host that does not sit under the
+ *   configured apex (e.g. an IP address or internal hostname).
  */
 export function extractSubdomain(host: string, appHost: string): string | null {
   const hostname = host.split(":")[0]?.toLowerCase() ?? "";
@@ -108,7 +56,7 @@ export function extractSubdomain(host: string, appHost: string): string | null {
 
   const subdomain = hostname.slice(0, -(apex.length + 1));
 
-  if (!subdomain || subdomain === "www") return null;
+  if (!subdomain) return null;
 
   return subdomain;
 }
@@ -121,5 +69,7 @@ export async function getAssociationBySubdomain(
   subdomain: string,
 ): Promise<Association | null> {
   const db = await getDb();
-  return db.collection<Association>("associations").findOne({ slug: subdomain });
+  return db
+    .collection<Association>("associations")
+    .findOne({ slug: subdomain });
 }
