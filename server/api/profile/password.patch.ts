@@ -17,9 +17,15 @@ export default defineEventHandler(async (event) => {
   const db = await getDb();
   const dbUser = await db
     .collection("users")
-    .findOne({ _id: new ObjectId(user.id) }, { projection: { passwordHash: 1 } });
+    .findOne(
+      { _id: new ObjectId(user.id) },
+      { projection: { passwordHash: 1 } },
+    );
 
-  if (!dbUser || !(await verifyPassword(dbUser.passwordHash, currentPassword))) {
+  if (
+    !dbUser ||
+    !(await verifyPassword(dbUser.passwordHash, currentPassword))
+  ) {
     throw createError({
       statusCode: 401,
       message: "Current password is incorrect",

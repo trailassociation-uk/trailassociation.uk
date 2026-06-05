@@ -1,0 +1,142 @@
+<script setup lang="ts">
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+const { user } = useUserSession();
+
+const form = reactive({
+  name: "",
+  subdomain: "",
+});
+
+const error = ref<string | null>(null);
+const loading = ref(false);
+// Tracks whether the user has manually edited the subdomain so we stop
+// auto-deriving it from the name once they take control.
+const subdomainTouched = ref(false);
+
+/** Derive a URL-safe subdomain suggestion from a free-text name. */
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 63);
+}
+
+watch(
+  () => form.name,
+  (name) => {
+    if (!subdomainTouched.value) {
+      form.subdomain = slugify(name);
+    }
+  }
+);
+
+function onSubdomainInput() {
+  // Stop deriving the subdomain from the name once the user edits it directly.
+  // We deliberately don't rewrite the value here: mutating it on every
+  // keystroke snaps the caret to the end and breaks select-and-delete.
+  // Normalisation happens on blur (and again on submit) instead.
+  subdomainTouched.value = true;
+}
+
+function normalizeSubdomainField() {
+  form.subdomain = slugify(form.subdomain);
+}
+
+function extractErrorMessage(e: unknown): string {
+  if (e && typeof e === "object" && "data" in e) {
+    const data = (e as { data?: { message?: string } }).data;
+    return data?.message ?? "Something went wrong. Please try again.";
+  }
+  return "Something went wrong. Please try again.";
+}
+
+async function onSubmit() {
+  // Guard against double submits (rapid clicks / Enter) before the disabled
+  // state has rendered.
+  if (loading.value) return;
+  error.value = null;
+  loading.value = true;
+  // Normalise once more in case the field wasn't blurred before submitting.
+  normalizeSubdomainField();
+  try {
+    const { url } = await $fetch("/api/associations", {
+      method: "POST",
+      body: { name: form.name, subdomain: form.subdomain },
+    });
+    // The new association lives on its own subdomain, so do a full external
+    // navigation rather than client-side routing.
+    await navigateTo(url, { external: true });
+  } catch (e: unknown) {
+    error.value = extractErrorMessage(e);
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(() => {
+  if (!user.value) {
+    navigateTo("/login", { replace: true });
+  }
+});
+
+watch(user, (u) => {
+  if (!u) navigateTo("/login", { replace: true });
+});
+</script>
+
+<template>
+  <main class="flex flex-1 flex-col items-center justify-center px-4 pt-24 pb-16">
+    <div class="w-full max-w-sm space-y-8">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold tracking-tight">Create an association</h1>
+        <p class="mt-2 text-muted-foreground">
+          Start a new trail association and invite your crew.
+        </p>
+      </div>
+
+      <form class="space-y-6" @submit.prevent="onSubmit">
+        <Field>
+          <FieldGroup>
+            <FieldLabel>Name</FieldLabel>
+            <Input v-model="form.name" type="text" placeholder="Peak District Trail Association" required
+              maxlength="100" autocomplete="organization" />
+          </FieldGroup>
+        </Field>
+
+        <Field>
+          <FieldGroup>
+            <FieldLabel>Subdomain</FieldLabel>
+            <div class="flex items-center gap-1">
+              <Input v-model="form.subdomain" type="text" placeholder="peak-district" required minlength="3"
+                maxlength="63" autocapitalize="none" autocomplete="off" spellcheck="false" class="text-right"
+                @input="onSubdomainInput" @blur="normalizeSubdomainField" />
+              <span class="text-muted-foreground whitespace-nowrap">.trailassociation.uk</span>
+            </div>
+            <FieldDescription>
+              Lowercase letters, numbers, and hyphens. This becomes your
+              association's web address.
+            </FieldDescription>
+          </FieldGroup>
+        </Field>
+
+        <Button type="submit" class="w-full" :disabled="loading">
+          {{ loading ? "Creating..." : "Create association" }}
+        </Button>
+
+        <p v-if="error" class="text-sm text-destructive" role="alert">
+          {{ error }}
+        </p>
+      </form>
+    </div>
+  </main>
+</template>

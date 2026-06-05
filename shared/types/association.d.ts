@@ -5,8 +5,8 @@ export interface Association {
   /** The subdomain ("bardon") — unique, lowercase. */
   slug: string;
   name: string;
-  region: string;
-  description: string;
+  region?: string;
+  description?: string;
   logoUrl?: string;
   createdAt: Date;
   createdBy: ObjectId;

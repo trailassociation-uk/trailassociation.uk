@@ -1,6 +1,96 @@
 import type { Association } from "#shared/types/association";
 import { getDb } from "../db";
 
+/** Min/max length for an association subdomain label. */
+export const SUBDOMAIN_MIN_LENGTH = 3;
+export const SUBDOMAIN_MAX_LENGTH = 63;
+
+/**
+ * Subdomains that are reserved for the platform and may never be claimed by an
+ * association. Keep `www` here in sync with the apex/`www` handling in
+ * {@link extractSubdomain} and the dev hosts script.
+ */
+export const RESERVED_SUBDOMAINS = new Set([
+  "www",
+  "api",
+  "app",
+  "admin",
+  "dashboard",
+  "account",
+  "accounts",
+  "auth",
+  "login",
+  "signup",
+  "logout",
+  "profile",
+  "settings",
+  "mail",
+  "email",
+  "smtp",
+  "imap",
+  "ftp",
+  "ns",
+  "ns1",
+  "ns2",
+  "dns",
+  "blog",
+  "docs",
+  "doc",
+  "help",
+  "support",
+  "status",
+  "about",
+  "contact",
+  "billing",
+  "static",
+  "assets",
+  "cdn",
+  "img",
+  "images",
+  "media",
+  "files",
+  "test",
+  "staging",
+  "dev",
+  "demo",
+  "internal",
+  "system",
+  "trailassociation",
+]);
+
+// Lowercase, URL-safe label: starts/ends with an alphanumeric and may contain
+// hyphens in between. No consecutive constraints beyond a single contiguous
+// label (no dots — a single subdomain level only).
+const SUBDOMAIN_PATTERN = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
+/**
+ * Validate a candidate association subdomain. Returns `null` when valid, or a
+ * human-readable error message describing the first failing rule.
+ *
+ * The value is expected to already be trimmed and lowercased by the caller (see
+ * {@link normalizeSubdomain}).
+ */
+export function validateSubdomain(subdomain: string): string | null {
+  if (subdomain.length < SUBDOMAIN_MIN_LENGTH) {
+    return `Subdomain must be at least ${SUBDOMAIN_MIN_LENGTH} characters.`;
+  }
+  if (subdomain.length > SUBDOMAIN_MAX_LENGTH) {
+    return `Subdomain must be at most ${SUBDOMAIN_MAX_LENGTH} characters.`;
+  }
+  if (!SUBDOMAIN_PATTERN.test(subdomain)) {
+    return "Subdomain may only contain lowercase letters, numbers, and hyphens, and must start and end with a letter or number.";
+  }
+  if (RESERVED_SUBDOMAINS.has(subdomain)) {
+    return "That subdomain is reserved.";
+  }
+  return null;
+}
+
+/** Trim and lowercase a raw subdomain input into a candidate value. */
+export function normalizeSubdomain(value: string): string {
+  return value.trim().toLowerCase();
+}
+
 /**
  * Extract the association subdomain from a request host.
  *

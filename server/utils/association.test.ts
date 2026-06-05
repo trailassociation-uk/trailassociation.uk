@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test";
-import { extractSubdomain } from "./association";
+import {
+  extractSubdomain,
+  normalizeSubdomain,
+  validateSubdomain,
+} from "./association";
 
 const APEX = "trailassociation.uk";
 
@@ -19,9 +23,9 @@ describe("extractSubdomain", () => {
   });
 
   it("strips the port before extracting", () => {
-    expect(extractSubdomain("peak-district.trailassociation.uk:3000", APEX)).toBe(
-      "peak-district",
-    );
+    expect(
+      extractSubdomain("peak-district.trailassociation.uk:3000", APEX),
+    ).toBe("peak-district");
   });
 
   it("strips the port from the apex host", () => {
@@ -36,7 +40,10 @@ describe("extractSubdomain", () => {
 
   it("matches the apex case-insensitively", () => {
     expect(
-      extractSubdomain("peak-district.trailassociation.uk", "TrailAssociation.UK"),
+      extractSubdomain(
+        "peak-district.trailassociation.uk",
+        "TrailAssociation.UK",
+      ),
     ).toBe("peak-district");
   });
 
@@ -67,5 +74,53 @@ describe("extractSubdomain", () => {
 
   it("returns null when the subdomain label is empty", () => {
     expect(extractSubdomain(".trailassociation.uk", APEX)).toBeNull();
+  });
+});
+
+describe("normalizeSubdomain", () => {
+  it("trims surrounding whitespace and lowercases", () => {
+    expect(normalizeSubdomain("  Peak-District  ")).toBe("peak-district");
+  });
+});
+
+describe("validateSubdomain", () => {
+  it("accepts a valid lowercase, hyphenated slug", () => {
+    expect(validateSubdomain("peak-district")).toBeNull();
+  });
+
+  it("accepts a slug with numbers", () => {
+    expect(validateSubdomain("trail99")).toBeNull();
+  });
+
+  it("rejects a slug that is too short", () => {
+    expect(validateSubdomain("ab")).toMatch(/at least/);
+  });
+
+  it("rejects a slug that is too long", () => {
+    expect(validateSubdomain("a".repeat(64))).toMatch(/at most/);
+  });
+
+  it("rejects uppercase characters", () => {
+    expect(validateSubdomain("PeakDistrict")).toMatch(/lowercase/);
+  });
+
+  it("rejects spaces and other unsafe characters", () => {
+    expect(validateSubdomain("peak district")).toMatch(/lowercase/);
+    expect(validateSubdomain("peak_district")).toMatch(/lowercase/);
+    expect(validateSubdomain("peak.district")).toMatch(/lowercase/);
+  });
+
+  it("rejects a leading hyphen", () => {
+    expect(validateSubdomain("-peak")).toMatch(/lowercase/);
+  });
+
+  it("rejects a trailing hyphen", () => {
+    expect(validateSubdomain("peak-")).toMatch(/lowercase/);
+  });
+
+  it("rejects reserved subdomains", () => {
+    expect(validateSubdomain("www")).toMatch(/reserved/);
+    expect(validateSubdomain("api")).toMatch(/reserved/);
+    expect(validateSubdomain("admin")).toMatch(/reserved/);
   });
 });

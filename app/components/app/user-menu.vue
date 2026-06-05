@@ -53,6 +53,9 @@ const profileIconIndex = computed(() => {
             <DropdownMenuItem as-child>
               <NuxtLink to="/my-associations" class="cursor-pointer">My associations</NuxtLink>
             </DropdownMenuItem>
+            <DropdownMenuItem as-child>
+              <NuxtLink to="/associations/new" class="cursor-pointer">Create association</NuxtLink>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem as-child>
               <NuxtLink to="/" @click="clear" class="cursor-pointer">Logout</NuxtLink>
