@@ -19,9 +19,10 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host 0.0.0.0",
     "format": "biome format --write && biome lint --write && bunx biome check --fix",
     "generate": "nuxt generate",
+    "hosts": "bun scripts/hosts.ts",
     "migrate": "migrate-mongo",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -33,7 +34,6 @@
     "migrate-mongo": "^14.0.7",
     "shadcn-vue": "^2.4.3",
     "tailwindcss": "^4.1.18",
-    "tsx": "^4.21.0",
     "tw-animate-css": "^1.4.0"
   }
 }

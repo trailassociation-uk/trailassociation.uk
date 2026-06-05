@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   runtimeConfig: {
+    // Apex host used to derive subdomains. Set `NUXT_HOST` to the dev host
+    // (e.g. `trailassociation.local`) for local subdomain testing.
+    host: process.env.NUXT_HOST || 'trailassociation.uk',
     session: {
       password: process.env.NUXT_SESSION_PASSWORD!,
       cookie: {

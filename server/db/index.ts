@@ -1,15 +1,18 @@
 import "dotenv/config";
-import { MongoClient, type Db } from "mongodb";
+import { type Db, MongoClient } from "mongodb";
 
-if (!process.env.MONGO_CONNECTION_STRING) {
-  throw new Error("MONGO_CONNECTION_STRING is not set");
-}
-
-const client = new MongoClient(process.env.MONGO_CONNECTION_STRING);
+let client: MongoClient | null = null;
 let _db: Db | null = null;
 
 export async function getDb(): Promise<Db> {
   if (_db) return _db;
+
+  const uri = process.env.MONGO_CONNECTION_STRING;
+  if (!uri) {
+    throw new Error("MONGO_CONNECTION_STRING is not set");
+  }
+
+  client ??= new MongoClient(uri);
   await client.connect();
   _db = client.db("trailassociation");
   return _db;
