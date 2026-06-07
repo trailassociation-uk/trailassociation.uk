@@ -3,39 +3,28 @@ import { z } from "zod";
 import { getDb } from "../../db";
 
 const bodySchema = z.object({
-  email: z.email(),
+  name: z.string().trim().min(1),
 });
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { email } = await readValidatedBody(event, bodySchema.parse);
+  const { name } = await readValidatedBody(event, bodySchema.parse);
 
   const db = await getDb();
 
-  const existing = await db
-    .collection("users")
-    .findOne({ email, _id: { $ne: new ObjectId(user.id) } });
-
-  if (existing) {
-    throw createError({
-      statusCode: 409,
-      message: "Email already in use",
-    });
-  }
-
   const result = await db
     .collection("users")
-    .updateOne({ _id: new ObjectId(user.id) }, { $set: { email } });
+    .updateOne({ _id: new ObjectId(user.id) }, { $set: { name } });
 
   if (result.matchedCount === 0) {
     throw createError({
       statusCode: 500,
-      message: "Failed to update email",
+      message: "Failed to update name",
     });
   }
 
   await setUserSession(event, {
-    user: { ...user, email },
+    user: { ...user, name },
   });
 
   return { success: true };

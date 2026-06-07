@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     .collection("users")
     .findOne(
       { _id: new ObjectId(user.id) },
-      { projection: { _id: 1, email: 1 } },
+      { projection: { _id: 1, email: 1, name: 1 } },
     );
 
   if (!profile) {
@@ -19,5 +19,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return { id: profile._id.toString(), email: profile.email };
+  return {
+    id: profile._id.toString(),
+    email: profile.email,
+    name: profile.name ?? "",
+  };
 });

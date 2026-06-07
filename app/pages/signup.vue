@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 const { fetch: refreshSession } = useUserSession();
 
 const form = reactive({
+  name: "",
   email: "",
   password: "",
   passwordConfirm: "",
@@ -52,6 +53,13 @@ async function onSubmit() {
 
       <form class="space-y-6" @submit.prevent="onSubmit">
 
+
+        <Field>
+          <FieldGroup>
+            <FieldLabel>Name</FieldLabel>
+            <Input v-model="form.name" type="text" placeholder="Your name" required autocomplete="name" />
+          </FieldGroup>
+        </Field>
 
         <Field>
           <FieldGroup>

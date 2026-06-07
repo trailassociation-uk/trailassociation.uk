@@ -4,6 +4,7 @@ import { getDb } from "../../db";
 
 const bodySchema = z
   .object({
+    name: z.string().trim().min(1),
     email: z.email(),
     password: z.string().min(8),
     passwordConfirm: z.string().min(8),
@@ -14,7 +15,10 @@ const bodySchema = z
   });
 
 export default defineEventHandler(async (event) => {
-  const { email, password } = await readValidatedBody(event, bodySchema.parse);
+  const { name, email, password } = await readValidatedBody(
+    event,
+    bodySchema.parse,
+  );
 
   const passwordHash = await hashPassword(password);
   const db = await getDb();
@@ -22,10 +26,10 @@ export default defineEventHandler(async (event) => {
   try {
     const result = await db
       .collection("users")
-      .insertOne({ email, passwordHash });
+      .insertOne({ name, email, passwordHash });
 
     await setUserSession(event, {
-      user: { id: result.insertedId.toString(), email },
+      user: { id: result.insertedId.toString(), email, name },
     });
 
     return { success: true };
