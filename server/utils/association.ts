@@ -1,3 +1,4 @@
+import type { H3Event } from "h3";
 import { isReservedSubdomain } from "#shared/reserved-subdomains";
 import type { Association } from "#shared/types/association";
 import { getDb } from "../db";
@@ -59,6 +60,27 @@ export function extractSubdomain(host: string, appHost: string): string | null {
   if (!subdomain) return null;
 
   return subdomain;
+}
+
+/**
+ * Build the absolute URL of an association's subdomain.
+ *
+ * The base is always the configured apex (`appHost`), never the host the
+ * request arrived on — otherwise a request to `www.<apex>` would produce
+ * `<subdomain>.www.<apex>`. We only borrow the port from the incoming host so
+ * local development (e.g. `:3000`) keeps working.
+ */
+export function buildAssociationUrl(
+  event: H3Event,
+  subdomain: string,
+  appHost: string,
+): string {
+  const protocol = getRequestProtocol(event, { xForwardedProto: true });
+  const host = getRequestHost(event, { xForwardedHost: true });
+
+  const port = host.split(":")[1];
+  const authority = port ? `${appHost}:${port}` : appHost;
+  return `${protocol}://${subdomain}.${authority}`;
 }
 
 /**

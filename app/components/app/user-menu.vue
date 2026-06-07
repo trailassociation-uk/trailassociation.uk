@@ -4,6 +4,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -51,10 +52,7 @@ const profileIconIndex = computed(() => {
               <NuxtLink to="/profile" class="cursor-pointer">Profile</NuxtLink>
             </DropdownMenuItem>
             <DropdownMenuItem as-child>
-              <NuxtLink to="/my-associations" class="cursor-pointer">My associations</NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem as-child>
-              <NuxtLink to="/associations/new" class="cursor-pointer">Create association</NuxtLink>
+              <NuxtLink to="/associations/mine" class="cursor-pointer">My associations</NuxtLink>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem as-child>

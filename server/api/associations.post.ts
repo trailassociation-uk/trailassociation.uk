@@ -3,33 +3,16 @@ import { z } from "zod";
 import type { Association } from "#shared/types/association";
 import type { Membership } from "#shared/types/membership";
 import { getDb } from "../db";
-import { normalizeSubdomain, validateSubdomain } from "../utils/association";
+import {
+  buildAssociationUrl,
+  normalizeSubdomain,
+  validateSubdomain,
+} from "../utils/association";
 
 const bodySchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   subdomain: z.string(),
 });
-
-/**
- * Build the absolute URL of an association's subdomain.
- *
- * The base is always the configured apex (`appHost`), never the host the
- * request arrived on — otherwise a request to `www.<apex>` would produce
- * `<subdomain>.www.<apex>`. We only borrow the port from the incoming host so
- * local development (e.g. `:3000`) keeps working.
- */
-function buildAssociationUrl(
-  event: Parameters<typeof getRequestHost>[0],
-  subdomain: string,
-  appHost: string,
-): string {
-  const protocol = getRequestProtocol(event, { xForwardedProto: true });
-  const host = getRequestHost(event, { xForwardedHost: true });
-
-  const port = host.split(":")[1];
-  const authority = port ? `${appHost}:${port}` : appHost;
-  return `${protocol}://${subdomain}.${authority}`;
-}
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
