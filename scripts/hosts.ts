@@ -18,7 +18,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 // Apex host used for local dev. Set `NUXT_HOST` in `.env` to match the host the
 // app derives subdomains from (see `nuxt.config.ts`).
-const DEV_HOST = process.env.NUXT_HOST ?? "trailassociation.local";
+const DEV_HOST = process.env.NUXT_HOST ?? "trailassociation.test";
 
 const HOSTS_PATH = process.env.HOSTS_FILE ?? "/etc/hosts";
 const BLOCK_START = "# >>> trailassociation.uk dev subdomains >>>";

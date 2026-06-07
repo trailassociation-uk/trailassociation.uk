@@ -2,7 +2,7 @@
 import tailwindcss from '@tailwindcss/vite'
 
 // Apex host used to derive subdomains. Set `NUXT_HOST` to the dev host
-// (e.g. `trailassociation.local`) for local subdomain testing.
+// (e.g. `trailassociation.test`) for local subdomain testing.
 const host = process.env.NUXT_HOST || 'trailassociation.uk'
 
 export default defineNuxtConfig({
