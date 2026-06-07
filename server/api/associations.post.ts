@@ -2,6 +2,7 @@ import { MongoServerError, ObjectId } from "mongodb";
 import { z } from "zod";
 import type { Association } from "#shared/types/association";
 import type { Membership } from "#shared/types/membership";
+import type { WithoutId } from "#shared/types/utils";
 import { getDb } from "../db";
 import {
   buildAssociationUrl,
@@ -56,7 +57,7 @@ export default defineEventHandler(async (event) => {
   let associationId: ObjectId;
   try {
     const result = await db
-      .collection<Omit<Association, "_id">>("associations")
+      .collection<WithoutId<Association>>("associations")
       .insertOne({ slug: subdomain, name, region, description, createdBy, createdAt: now });
     associationId = result.insertedId;
   } catch (err) {
@@ -71,7 +72,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Make the creator the first admin (TRAIL-22 Membership model).
-  await db.collection<Omit<Membership, "_id">>("memberships").insertOne({
+  await db.collection<WithoutId<Membership>>("memberships").insertOne({
     associationId,
     userId: createdBy,
     role: "admin",

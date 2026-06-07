@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { User } from "#shared/types/user";
 import { getDb } from "../../db";
 
 const bodySchema = z.object({
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const { email, password } = await readValidatedBody(event, bodySchema.parse);
 
   const db = await getDb();
-  const user = await db.collection("users").findOne({ email });
+  const user = await db.collection<User>("users").findOne({ email });
 
   if (!user || !(await verifyPassword(user.passwordHash, password))) {
     throw createError({

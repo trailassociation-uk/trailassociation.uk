@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { z } from "zod";
+import type { User } from "#shared/types/user";
 import { getDb } from "../../db";
 
 const bodySchema = z.object({
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   const db = await getDb();
   const dbUser = await db
-    .collection("users")
+    .collection<User>("users")
     .findOne(
       { _id: new ObjectId(user.id) },
       { projection: { passwordHash: 1 } },
@@ -35,7 +36,7 @@ export default defineEventHandler(async (event) => {
   const passwordHash = await hashPassword(newPassword);
 
   await db
-    .collection("users")
+    .collection<User>("users")
     .updateOne({ _id: new ObjectId(user.id) }, { $set: { passwordHash } });
 
   return { success: true };

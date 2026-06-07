@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { z } from "zod";
+import type { User } from "#shared/types/user";
 import { getDb } from "../../db";
 
 const bodySchema = z.object({
@@ -13,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const db = await getDb();
 
   const result = await db
-    .collection("users")
+    .collection<User>("users")
     .updateOne({ _id: new ObjectId(user.id) }, { $set: { name } });
 
   if (result.matchedCount === 0) {

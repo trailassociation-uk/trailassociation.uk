@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import type { User } from "#shared/types/user";
 import { getDb } from "../db";
 
 export default defineEventHandler(async (event) => {
@@ -6,7 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const db = await getDb();
   const profile = await db
-    .collection("users")
+    .collection<User>("users")
     .findOne(
       { _id: new ObjectId(user.id) },
       { projection: { _id: 1, email: 1, name: 1 } },

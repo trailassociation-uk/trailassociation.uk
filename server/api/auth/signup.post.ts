@@ -1,5 +1,7 @@
 import { MongoServerError } from "mongodb";
 import { z } from "zod";
+import type { User } from "#shared/types/user";
+import type { WithoutId } from "#shared/types/utils";
 import { getDb } from "../../db";
 
 const bodySchema = z
@@ -25,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const result = await db
-      .collection("users")
+      .collection<WithoutId<User>>("users")
       .insertOne({ name, email, passwordHash });
 
     await setUserSession(event, {
