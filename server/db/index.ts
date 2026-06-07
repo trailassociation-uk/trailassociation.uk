@@ -14,6 +14,7 @@ export async function getDb(): Promise<Db> {
 
   client ??= new MongoClient(uri);
   await client.connect();
-  _db = client.db("trailassociation");
+  const dbName = process.env.MONGO_DB_NAME ?? "trailassociation";
+  _db = client.db(dbName);
   return _db;
 }
