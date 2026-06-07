@@ -12,7 +12,7 @@ definePageMeta({ middleware: "auth" });
 
 const { fetch: refreshSession } = useUserSession();
 
-const profile = ref<{ id: number; email: string; name: string } | null>(null);
+const profile = ref<{ id: string; email: string; name: string } | null>(null);
 const profileLoading = ref(true);
 
 const detailsForm = reactive({
