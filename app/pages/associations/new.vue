@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const { user } = useUserSession();
+definePageMeta({ middleware: "auth" });
 
 const form = reactive({
   name: "",
@@ -91,15 +91,6 @@ async function onSubmit() {
   }
 }
 
-onMounted(() => {
-  if (!user.value) {
-    navigateTo("/login", { replace: true });
-  }
-});
-
-watch(user, (u) => {
-  if (!u) navigateTo("/login", { replace: true });
-});
 </script>
 
 <template>

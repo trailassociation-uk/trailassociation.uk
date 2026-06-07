@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 
+definePageMeta({ middleware: "auth" });
+
 interface MyAssociation {
   id: string;
   name: string;
@@ -9,8 +11,6 @@ interface MyAssociation {
   status: "active" | "pending";
   url: string;
 }
-
-const { user } = useUserSession();
 
 const associations = ref<MyAssociation[]>([]);
 const loading = ref(true);
@@ -30,19 +30,7 @@ async function fetchAssociations() {
   }
 }
 
-onMounted(async () => {
-  if (!user.value) {
-    await navigateTo("/login", { replace: true });
-    return;
-  }
-  await fetchAssociations();
-});
-
-watch(user, (u) => {
-  if (!u && !loading.value) {
-    navigateTo("/login", { replace: true });
-  }
-});
+onMounted(fetchAssociations);
 </script>
 
 <template>

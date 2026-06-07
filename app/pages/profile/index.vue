@@ -7,7 +7,9 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-const { user, fetch: refreshSession } = useUserSession();
+definePageMeta({ middleware: "auth" });
+
+const { fetch: refreshSession } = useUserSession();
 
 const profile = ref<{ id: number; email: string; name: string } | null>(null);
 const profileLoading = ref(true);
@@ -67,19 +69,7 @@ async function onDetailsSubmit() {
   }
 }
 
-onMounted(async () => {
-  if (!user.value) {
-    await navigateTo("/login", { replace: true });
-    return;
-  }
-  await fetchProfile();
-});
-
-watch(user, (u) => {
-  if (!u && !profileLoading.value) {
-    navigateTo("/login", { replace: true });
-  }
-});
+onMounted(() => { fetchProfile(); });
 </script>
 
 <template>

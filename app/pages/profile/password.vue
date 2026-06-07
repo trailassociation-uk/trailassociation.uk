@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-const { user } = useUserSession();
+definePageMeta({ middleware: "auth" });
 
 const form = reactive({
   currentPassword: "",
@@ -57,15 +57,6 @@ async function onSubmit() {
   }
 }
 
-onMounted(() => {
-  if (!user.value) {
-    navigateTo("/login", { replace: true });
-  }
-});
-
-watch(user, (u) => {
-  if (!u) navigateTo("/login", { replace: true });
-});
 </script>
 
 <template>
