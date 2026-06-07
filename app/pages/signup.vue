@@ -7,6 +7,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { extractErrorMessage } from "@/lib/utils";
 
 const { fetch: refreshSession } = useUserSession();
 
@@ -31,7 +32,7 @@ async function onSubmit() {
     await refreshSession();
     await navigateTo("/");
   } catch (e: unknown) {
-    error.value = "Something went wrong. Please try again.";
+    error.value = extractErrorMessage(e);
   } finally {
     loading.value = false;
   }
