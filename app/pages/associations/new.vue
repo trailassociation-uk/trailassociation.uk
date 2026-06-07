@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { extractErrorMessage } from "@/lib/utils";
+import { extractErrorMessage, slugify } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
@@ -24,16 +24,6 @@ const loading = ref(false);
 // Tracks whether the user has manually edited the subdomain so we stop
 // auto-deriving it from the name once they take control.
 const subdomainTouched = ref(false);
-
-/** Derive a URL-safe subdomain suggestion from a free-text name. */
-function slugify(value: string): string {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 63);
-}
 
 watch(
   () => form.name,
