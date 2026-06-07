@@ -9,7 +9,7 @@ import { getUserMemberships } from "../../utils/membership";
  */
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { host: appHost } = useRuntimeConfig(event);
+  const appHost = useRuntimeConfig(event).public.host;
 
   const memberships = await getUserMemberships(user.id);
   if (memberships.length === 0) return { associations: [] };

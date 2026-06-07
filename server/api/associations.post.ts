@@ -19,7 +19,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { host: appHost } = useRuntimeConfig(event);
+  const appHost = useRuntimeConfig(event).public.host;
 
   const body = await parseBody(event, bodySchema);
   const name = body.name.trim();

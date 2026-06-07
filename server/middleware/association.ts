@@ -7,7 +7,7 @@ import {
 export default defineEventHandler(async (event) => {
   event.context.association = null;
 
-  const { host: appHost } = useRuntimeConfig(event);
+  const appHost = useRuntimeConfig(event).public.host;
   const host = getRequestHost(event, { xForwardedHost: true });
   const subdomain = extractSubdomain(host, appHost);
 
