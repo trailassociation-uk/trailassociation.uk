@@ -12,7 +12,7 @@ import { extractErrorMessage, slugify } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
-const { host: appHost } = useRuntimeConfig();
+const { public: { host: appHost } } = useRuntimeConfig();
 
 const form = reactive({
   name: "",
