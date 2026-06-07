@@ -8,7 +8,9 @@ const host = process.env.NUXT_HOST || 'trailassociation.uk'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   runtimeConfig: {
-    host,
+    public: {
+      host,
+    },
     session: {
       password: process.env.NUXT_SESSION_PASSWORD!,
       cookie: {

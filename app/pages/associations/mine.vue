@@ -72,7 +72,7 @@ onMounted(fetchAssociations);
             <div class="min-w-0">
               <p class="truncate font-semibold">{{ association.name }}</p>
               <p class="truncate text-sm text-muted-foreground">
-                {{ association.subdomain }}.trailassociation.uk
+                {{ association.url }}
               </p>
             </div>
             <div class="flex shrink-0 items-center gap-2 text-xs">

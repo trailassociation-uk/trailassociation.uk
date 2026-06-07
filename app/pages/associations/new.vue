@@ -12,6 +12,8 @@ import { extractErrorMessage, slugify } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
+const { host: appHost } = useRuntimeConfig();
+
 const form = reactive({
   name: "",
   subdomain: "",
@@ -103,7 +105,7 @@ async function onSubmit() {
               <Input v-model="form.subdomain" type="text" placeholder="peak-district" required minlength="3"
                 maxlength="63" autocapitalize="none" autocomplete="off" spellcheck="false" class="text-right"
                 @input="onSubdomainInput" @blur="normalizeSubdomainField" />
-              <span class="text-muted-foreground whitespace-nowrap">.trailassociation.uk</span>
+              <span class="text-muted-foreground whitespace-nowrap">.{{ appHost }}</span>
             </div>
             <FieldDescription>
               Lowercase letters, numbers, and hyphens. This becomes your
