@@ -8,7 +8,7 @@ const bodySchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  const { email, password } = await readValidatedBody(event, bodySchema.parse);
+  const { email, password } = await parseBody(event, bodySchema);
 
   const db = await getDb();
   const user = await db.collection<User>("users").findOne({ email });

@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
   const { host: appHost } = useRuntimeConfig(event);
 
-  const body = await readValidatedBody(event, bodySchema.parse);
+  const body = await parseBody(event, bodySchema);
   const name = body.name.trim();
   const subdomain = normalizeSubdomain(body.subdomain);
   const region = body.region?.trim() || undefined;

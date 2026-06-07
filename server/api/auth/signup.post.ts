@@ -17,10 +17,7 @@ const bodySchema = z
   });
 
 export default defineEventHandler(async (event) => {
-  const { name, email, password } = await readValidatedBody(
-    event,
-    bodySchema.parse,
-  );
+  const { name, email, password } = await parseBody(event, bodySchema);
 
   const passwordHash = await hashPassword(password);
   const db = await getDb();

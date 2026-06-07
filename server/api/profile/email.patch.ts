@@ -9,7 +9,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
-  const { email } = await readValidatedBody(event, bodySchema.parse);
+  const { email } = await parseBody(event, bodySchema);
 
   const db = await getDb();
 
