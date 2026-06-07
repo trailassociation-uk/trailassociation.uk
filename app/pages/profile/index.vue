@@ -6,6 +6,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { extractErrorMessage } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
@@ -22,13 +23,6 @@ const detailsError = ref<string | null>(null);
 const detailsLoading = ref(false);
 const detailsSuccess = ref(false);
 
-function extractErrorMessage(e: unknown): string {
-  if (e && typeof e === "object" && "data" in e) {
-    const data = (e as { data?: { message?: string } }).data;
-    return data?.message ?? "Something went wrong.";
-  }
-  return "Something went wrong.";
-}
 
 async function fetchProfile() {
   try {

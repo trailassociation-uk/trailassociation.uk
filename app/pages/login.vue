@@ -6,6 +6,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { extractErrorMessage } from "@/lib/utils";
 
 const { fetch: refreshSession } = useUserSession();
 
@@ -28,12 +29,7 @@ async function onSubmit() {
     await refreshSession();
     await navigateTo("/");
   } catch (e: unknown) {
-    if (e && typeof e === "object" && "data" in e) {
-      const data = (e as { data?: { message?: string } }).data;
-      error.value = data?.message ?? "Invalid email or password.";
-    } else {
-      error.value = "Invalid email or password.";
-    }
+    error.value = extractErrorMessage(e, "Invalid email or password.");
   } finally {
     loading.value = false;
   }

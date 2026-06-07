@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { extractErrorMessage } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
@@ -55,13 +56,6 @@ function normalizeSubdomainField() {
   form.subdomain = slugify(form.subdomain);
 }
 
-function extractErrorMessage(e: unknown): string {
-  if (e && typeof e === "object" && "data" in e) {
-    const data = (e as { data?: { message?: string } }).data;
-    return data?.message ?? "Something went wrong. Please try again.";
-  }
-  return "Something went wrong. Please try again.";
-}
 
 async function onSubmit() {
   // Guard against double submits (rapid clicks / Enter) before the disabled
