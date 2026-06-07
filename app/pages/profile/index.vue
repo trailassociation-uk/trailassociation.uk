@@ -41,18 +41,17 @@ async function onDetailsSubmit() {
   detailsSuccess.value = false;
   detailsLoading.value = true;
   try {
-    if (detailsForm.name !== profile.value?.name) {
-      await $fetch("/api/profile/name", {
+    const updates: { name?: string; email?: string } = {};
+    if (detailsForm.name !== profile.value?.name) updates.name = detailsForm.name;
+    if (detailsForm.email !== profile.value?.email) updates.email = detailsForm.email;
+
+    if (Object.keys(updates).length > 0) {
+      await $fetch("/api/profile", {
         method: "PATCH",
-        body: { name: detailsForm.name },
+        body: updates,
       });
     }
-    if (detailsForm.email !== profile.value?.email) {
-      await $fetch("/api/profile/email", {
-        method: "PATCH",
-        body: { email: detailsForm.email },
-      });
-    }
+
     await refreshSession();
     await fetchProfile();
     detailsSuccess.value = true;
