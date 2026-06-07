@@ -12,6 +12,8 @@ import {
 const bodySchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
   subdomain: z.string(),
+  region: z.string().trim().max(100).optional(),
+  description: z.string().trim().max(1000).optional(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -21,6 +23,8 @@ export default defineEventHandler(async (event) => {
   const body = await readValidatedBody(event, bodySchema.parse);
   const name = body.name.trim();
   const subdomain = normalizeSubdomain(body.subdomain);
+  const region = body.region?.trim() || undefined;
+  const description = body.description?.trim() || undefined;
 
   const subdomainError = validateSubdomain(subdomain);
   if (subdomainError) {
@@ -53,7 +57,7 @@ export default defineEventHandler(async (event) => {
   try {
     const result = await db
       .collection<Omit<Association, "_id">>("associations")
-      .insertOne({ slug: subdomain, name, createdBy, createdAt: now });
+      .insertOne({ slug: subdomain, name, region, description, createdBy, createdAt: now });
     associationId = result.insertedId;
   } catch (err) {
     if (err instanceof MongoServerError && err.code === 11000) {

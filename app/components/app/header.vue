@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import UserMenu from "@/components/app/user-menu.vue";
 
+const association = useState<{ name: string } | null>("association");
 </script>
 
 <template>
@@ -16,21 +17,30 @@ import UserMenu from "@/components/app/user-menu.vue";
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
       <NuxtLink to="/" class="flex items-center gap-2 font-semibold">
         <MapPin class="size-6 text-red-600" aria-hidden="true" />
-        <span class="text-foreground">Trail Association</span>
+        <span class="text-foreground">{{ association?.name ?? "Trail Association" }}</span>
       </NuxtLink>
 
       <NavigationMenu class="hidden md:flex">
         <NavigationMenuList class="flex gap-1">
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/">
-              About
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink href="/">
-              Associations
-            </NavigationMenuLink>
-          </NavigationMenuItem>
+          <template v-if="association">
+            <NavigationMenuItem>
+              <NavigationMenuLink href="/">Events</NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink href="/">Members</NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink href="/">About</NavigationMenuLink>
+            </NavigationMenuItem>
+          </template>
+          <template v-else>
+            <NavigationMenuItem>
+              <NavigationMenuLink href="/">About</NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink href="/">Associations</NavigationMenuLink>
+            </NavigationMenuItem>
+          </template>
         </NavigationMenuList>
       </NavigationMenu>
 

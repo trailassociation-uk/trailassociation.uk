@@ -7,12 +7,15 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 const { user } = useUserSession();
 
 const form = reactive({
   name: "",
   subdomain: "",
+  region: "",
+  description: "",
 });
 
 const error = ref<string | null>(null);
@@ -71,7 +74,12 @@ async function onSubmit() {
   try {
     const { url } = await $fetch("/api/associations", {
       method: "POST",
-      body: { name: form.name, subdomain: form.subdomain },
+      body: {
+        name: form.name,
+        subdomain: form.subdomain,
+        region: form.region || undefined,
+        description: form.description || undefined,
+      },
     });
     // The new association lives on its own subdomain, so do a full external
     // navigation rather than client-side routing.
@@ -126,6 +134,27 @@ watch(user, (u) => {
               Lowercase letters, numbers, and hyphens. This becomes your
               association's web address.
             </FieldDescription>
+          </FieldGroup>
+        </Field>
+
+        <Field>
+          <FieldGroup>
+            <FieldLabel>
+              Region
+              <span class="text-muted-foreground font-normal">(optional)</span>
+            </FieldLabel>
+            <Input v-model="form.region" type="text" placeholder="Peak District" maxlength="100" />
+          </FieldGroup>
+        </Field>
+
+        <Field>
+          <FieldGroup>
+            <FieldLabel>
+              Description
+              <span class="text-muted-foreground font-normal">(optional)</span>
+            </FieldLabel>
+            <Textarea v-model="form.description" placeholder="Tell riders what your association is about…"
+              maxlength="1000" rows="4" />
           </FieldGroup>
         </Field>
 
