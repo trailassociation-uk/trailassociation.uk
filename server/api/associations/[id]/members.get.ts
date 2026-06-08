@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import type { Membership } from "#shared/types/membership";
 import type { User } from "#shared/types/user";
 import { getDb } from "../../../db";

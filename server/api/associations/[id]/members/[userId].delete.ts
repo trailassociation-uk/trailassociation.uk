@@ -16,14 +16,18 @@ export default defineEventHandler(async (event) => {
   const { userId } = event.context.params as { userId: string };
 
   if (userId === user.id) {
-    throw createError({ statusCode: 400, message: "You cannot remove yourself" });
+    throw createError({
+      statusCode: 400,
+      message: "You cannot remove yourself",
+    });
   }
 
   const db = await getDb();
 
-  const result = await db
-    .collection<Membership>("memberships")
-    .deleteOne({ userId: new ObjectId(userId), associationId: association._id });
+  const result = await db.collection<Membership>("memberships").deleteOne({
+    userId: new ObjectId(userId),
+    associationId: association._id,
+  });
 
   if (result.deletedCount === 0) {
     throw createError({ statusCode: 404, message: "Member not found" });

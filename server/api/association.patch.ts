@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { z } from "zod";
 import type { Association } from "#shared/types/association";
 import { getDb } from "../db";
@@ -23,7 +22,8 @@ export default defineEventHandler(async (event) => {
 
   const body = await parseBody(event, bodySchema);
 
-  const updates: Partial<Pick<Association, "name" | "region" | "description">> = {};
+  const updates: Partial<Pick<Association, "name" | "region" | "description">> =
+    {};
   if (body.name !== undefined) updates.name = body.name;
   if (body.region !== undefined) updates.region = body.region;
   if (body.description !== undefined) updates.description = body.description;

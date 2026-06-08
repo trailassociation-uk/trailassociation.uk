@@ -21,7 +21,10 @@ export default defineNuxtPlugin(() => {
       }
     : null;
 
-  const membership = useState<{ status: string; role: string } | null>("association-membership", () => null);
+  const membership = useState<{ status: string; role: string } | null>(
+    "association-membership",
+    () => null,
+  );
   membership.value = membershipCtx
     ? { status: membershipCtx.status, role: membershipCtx.role }
     : null;

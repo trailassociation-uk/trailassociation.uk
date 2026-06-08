@@ -58,7 +58,14 @@ export default defineEventHandler(async (event) => {
   try {
     const result = await db
       .collection<WithoutId<Association>>("associations")
-      .insertOne({ slug: subdomain, name, region, description, createdBy, createdAt: now });
+      .insertOne({
+        slug: subdomain,
+        name,
+        region,
+        description,
+        createdBy,
+        createdAt: now,
+      });
     associationId = result.insertedId;
   } catch (err) {
     if (err instanceof MongoServerError && err.code === 11000) {

@@ -24,7 +24,10 @@ const { user } = useUserSession();
 
 type MembershipState = { status: string; role: string } | null;
 
-const membership = useState<MembershipState>("association-membership", () => null);
+const membership = useState<MembershipState>(
+  "association-membership",
+  () => null,
+);
 
 const joining = ref(false);
 
@@ -48,13 +51,25 @@ async function requestToJoin() {
             <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
               {{ props.name }}
             </h1>
-            <Badge v-if="props.region" variant="secondary" class="flex items-center gap-1">
+            <Badge
+              v-if="props.region"
+              variant="secondary"
+              class="flex items-center mt-2 gap-1"
+            >
               <MapPin class="size-3" aria-hidden="true" />
               {{ props.region }}
             </Badge>
           </div>
           <Button
-            v-if="user && membership === null"
+            v-if="user && membership?.role === 'admin'"
+            as-child
+            class="shrink-0"
+            size="sm"
+          >
+            <NuxtLink to="/admin">Manage</NuxtLink>
+          </Button>
+          <Button
+            v-else-if="user && membership === null"
             class="shrink-0"
             size="sm"
             :disabled="joining"
@@ -62,7 +77,11 @@ async function requestToJoin() {
           >
             {{ joining ? "Requesting…" : "Request to join" }}
           </Button>
-          <Badge v-else-if="user && membership?.status === 'pending'" variant="outline" class="shrink-0">
+          <Badge
+            v-else-if="user && membership?.status === 'pending'"
+            variant="outline"
+            class="shrink-0"
+          >
             Request pending
           </Badge>
         </div>
@@ -75,7 +94,10 @@ async function requestToJoin() {
 
       <section aria-labelledby="events-heading">
         <div class="mb-4 flex items-center gap-2">
-          <CalendarDays class="size-5 text-muted-foreground" aria-hidden="true" />
+          <CalendarDays
+            class="size-5 text-muted-foreground"
+            aria-hidden="true"
+          />
           <h2 id="events-heading" class="text-xl font-semibold">
             Upcoming events
           </h2>
