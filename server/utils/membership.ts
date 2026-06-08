@@ -3,6 +3,13 @@ import { ObjectId } from "mongodb";
 import type { Membership } from "#shared/types/membership";
 import { getDb } from "../db";
 
+export function requireAdmin(event: H3Event): void {
+  const membership = event.context.membership;
+  if (!membership || membership.role !== "admin") {
+    throw createError({ statusCode: 403, message: "Forbidden" });
+  }
+}
+
 /**
  * Load the current user's membership for the active association.
  *
