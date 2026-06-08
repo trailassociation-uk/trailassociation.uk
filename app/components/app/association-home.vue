@@ -84,6 +84,13 @@ async function requestToJoin() {
           >
             Request pending
           </Badge>
+          <Badge
+            v-else-if="user && membership?.role === 'member' && membership?.status === 'active'"
+            variant="secondary"
+            class="shrink-0"
+          >
+            Member
+          </Badge>
         </div>
         <p v-if="props.description" class="text-lg text-muted-foreground">
           {{ props.description }}
