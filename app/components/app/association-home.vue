@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MapPin, CalendarDays } from "lucide-vue-next";
+import { MapPin, CalendarDays } from "@lucide/vue";
 
 interface Props {
   id: string;
