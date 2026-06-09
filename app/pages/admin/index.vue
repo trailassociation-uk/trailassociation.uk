@@ -6,15 +6,8 @@ import { Users, MapPin } from "@lucide/vue";
 
 definePageMeta({ middleware: "auth" });
 
-const association = useState<{
-  id: string;
-  name: string;
-  region: string | null;
-  description: string | null;
-} | null>("association");
-const membership = useState<{ status: string; role: string } | null>(
-  "association-membership",
-);
+const association = useAssociation();
+const membership = useMembership();
 
 type AdminStats = { activeCount: number; pendingCount: number };
 

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import UserMenu from "@/components/app/user-menu.vue";
 
-const association = useState<{ name: string } | null>("association");
+const association = useAssociation();
 </script>
 
 <template>

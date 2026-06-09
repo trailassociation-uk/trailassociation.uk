@@ -14,8 +14,8 @@ interface Member {
   joinedAt: string;
 }
 
-const association = useState<{ id: string; name: string } | null>("association");
-const membership = useState<{ status: string; role: string } | null>("association-membership");
+const association = useAssociation();
+const membership = useMembership();
 const { user } = useUserSession();
 
 const actioning = ref<string | null>(null);

@@ -7,8 +7,8 @@ import { extractErrorMessage } from "@/lib/utils";
 
 definePageMeta({ middleware: "auth" });
 
-const association = useState<{ id: string; name: string; region: string | null; description: string | null } | null>("association");
-const membership = useState<{ status: string; role: string } | null>("association-membership");
+const association = useAssociation();
+const membership = useMembership();
 
 const detailsForm = reactive({ name: "", region: "", description: "" });
 const detailsSaving = ref(false);

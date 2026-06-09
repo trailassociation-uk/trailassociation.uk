@@ -3,14 +3,7 @@ export default defineNuxtPlugin(() => {
   const assoc = event?.context.association ?? null;
   const membershipCtx = event?.context.membership ?? null;
 
-  const association = useState<{
-    id: string;
-    name: string;
-    slug: string;
-    region: string | null;
-    description: string | null;
-  } | null>("association", () => null);
-
+  const association = useAssociation();
   association.value = assoc
     ? {
         id: assoc._id.toString(),
@@ -21,10 +14,7 @@ export default defineNuxtPlugin(() => {
       }
     : null;
 
-  const membership = useState<{ status: string; role: string } | null>(
-    "association-membership",
-    () => null,
-  );
+  const membership = useMembership();
   membership.value = membershipCtx
     ? { status: membershipCtx.status, role: membershipCtx.role }
     : null;
