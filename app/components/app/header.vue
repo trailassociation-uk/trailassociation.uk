@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MapPin } from "@lucide/vue";
+import UserMenu from "@/components/app/user-menu.vue";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -7,7 +8,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import UserMenu from "@/components/app/user-menu.vue";
 
 const association = useAssociation();
 </script>

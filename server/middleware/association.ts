@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
   // Apex host — no association context.
   if (!subdomain) return;
 
-  const redirectToApex = () => sendRedirect(event, buildApexUrl(event, appHost), 302);
+  const redirectToApex = () =>
+    sendRedirect(event, buildApexUrl(event, appHost), 302);
 
   // Platform-reserved subdomains (`api`, `app`, …) can never be claimed, so
   // redirect rather than serving the apex page on a non-apex host.

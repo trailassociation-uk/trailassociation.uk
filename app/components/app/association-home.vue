@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { CalendarDays, MapPin } from "@lucide/vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MapPin, CalendarDays } from "@lucide/vue";
 
 interface Props {
   id: string;

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MapPin, Users } from "@lucide/vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Users, MapPin } from "@lucide/vue";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 definePageMeta({ middleware: "auth" });
 

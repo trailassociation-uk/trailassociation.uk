@@ -1,11 +1,14 @@
 {
   "files": {
-    "includes": ["app/**/*.ts", "server/**/*.ts"]
+    "includes": ["app/**/*.ts", "app/**/*.vue", "server/**/*.ts"]
   },
   "formatter": {
     "enabled": true,
     "indentWidth": 2,
     "indentStyle": "space"
+  },
+  "html": {
+    "experimentalFullSupportEnabled": true
   },
   "assist": {
     "actions": {
@@ -19,10 +22,6 @@
       "includes": ["app/**/*.vue"],
       "linter": {
         "rules": {
-          "style": {
-            "useConst": "off",
-            "useImportType": "off"
-          },
           "correctness": {
             "noUnusedVariables": "off",
             "noUnusedImports": "off"
