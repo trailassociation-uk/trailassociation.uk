@@ -22,6 +22,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "test": "bun test",
     "dev": "nuxt dev --host 0.0.0.0",
     "format": "biome format --write && biome lint --write && bunx biome check --fix",
     "generate": "nuxt generate",
