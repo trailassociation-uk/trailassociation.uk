@@ -8,6 +8,8 @@
 const REQUIRED_ENV = ["MONGO_CONNECTION_STRING"] as const;
 
 export default defineNitroPlugin(() => {
+  if (import.meta.prerender) return;
+
   const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
