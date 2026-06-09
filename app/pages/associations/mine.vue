@@ -12,25 +12,12 @@ interface MyAssociation {
   url: string;
 }
 
-const associations = ref<MyAssociation[]>([]);
-const loading = ref(true);
-const error = ref<string | null>(null);
+const { data, pending, error } = await useAsyncData(
+  "my-associations",
+  () => $fetch<{ associations: MyAssociation[] }>("/api/associations/mine"),
+);
 
-async function fetchAssociations() {
-  loading.value = true;
-  error.value = null;
-  try {
-    const { associations: rows } =
-      await $fetch<{ associations: MyAssociation[] }>("/api/associations/mine");
-    associations.value = rows;
-  } catch {
-    error.value = "Couldn't load your associations. Please try again.";
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(fetchAssociations);
+const associations = computed(() => data.value?.associations ?? []);
 </script>
 
 <template>
@@ -48,12 +35,12 @@ onMounted(fetchAssociations);
         </Button>
       </div>
 
-      <div v-if="loading" class="text-muted-foreground">
+      <div v-if="pending" class="text-muted-foreground">
         Loading...
       </div>
 
       <p v-else-if="error" class="text-sm text-destructive" role="alert">
-        {{ error }}
+        Couldn't load your associations. Please try again.
       </p>
 
       <div v-else-if="associations.length === 0" class="rounded-lg border border-foreground p-8 text-center">

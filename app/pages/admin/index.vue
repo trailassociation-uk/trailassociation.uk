@@ -16,27 +16,21 @@ const membership = useState<{ status: string; role: string } | null>(
   "association-membership",
 );
 
-const activeCount = ref(0);
-const pendingCount = ref(0);
-const loading = ref(true);
-const error = ref<string | null>(null);
+type AdminStats = { activeCount: number; pendingCount: number };
 
-onMounted(async () => {
-  if (!association.value) return navigateTo("/");
-  if (membership.value?.role !== "admin") return navigateTo("/");
+const { data, pending: loading, error } = await useAsyncData(
+  "admin-stats",
+  async (): Promise<AdminStats | null> => {
+    if (!association.value || membership.value?.role !== "admin") {
+      await navigateTo("/");
+      return null;
+    }
+    return $fetch(`/api/associations/${association.value.id}/admin`);
+  },
+);
 
-  try {
-    const data = await $fetch<{ activeCount: number; pendingCount: number }>(
-      `/api/associations/${association.value.id}/admin`,
-    );
-    activeCount.value = data.activeCount;
-    pendingCount.value = data.pendingCount;
-  } catch {
-    error.value = "Couldn't load admin data. Please try again.";
-  } finally {
-    loading.value = false;
-  }
-});
+const activeCount = computed(() => data.value?.activeCount ?? 0);
+const pendingCount = computed(() => data.value?.pendingCount ?? 0);
 </script>
 
 <template>
@@ -52,7 +46,7 @@ onMounted(async () => {
       <div v-if="loading" class="text-muted-foreground">Loading...</div>
 
       <p v-else-if="error" class="text-sm text-destructive" role="alert">
-        {{ error }}
+        Couldn't load admin data. Please try again.
       </p>
 
       <div v-else class="space-y-6">

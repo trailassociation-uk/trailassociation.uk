@@ -18,29 +18,23 @@ const association = useState<{ id: string; name: string } | null>("association")
 const membership = useState<{ status: string; role: string } | null>("association-membership");
 const { user } = useUserSession();
 
-const members = ref<Member[]>([]);
-const loading = ref(true);
-const error = ref<string | null>(null);
 const actioning = ref<string | null>(null);
+
+const { data, pending: loading, error } = await useAsyncData(
+  "admin-members",
+  async (): Promise<{ members: Member[] } | null> => {
+    if (!association.value || membership.value?.role !== "admin") {
+      await navigateTo("/");
+      return null;
+    }
+    return $fetch(`/api/associations/${association.value.id}/members`);
+  },
+);
+
+const members = ref<Member[]>(data.value?.members ?? []);
 
 const pendingMembers = computed(() => members.value.filter((m) => m.status === "pending"));
 const activeMembers = computed(() => members.value.filter((m) => m.status === "active"));
-
-onMounted(async () => {
-  if (!association.value) return navigateTo("/");
-  if (membership.value?.role !== "admin") return navigateTo("/");
-
-  try {
-    const { members: rows } = await $fetch<{ members: Member[] }>(
-      `/api/associations/${association.value.id}/members`,
-    );
-    members.value = rows;
-  } catch {
-    error.value = "Couldn't load members. Please try again.";
-  } finally {
-    loading.value = false;
-  }
-});
 
 async function approve(member: Member) {
   actioning.value = member.userId;
@@ -88,7 +82,7 @@ function displayName(member: Member) {
       <div v-if="loading" class="text-muted-foreground">Loading...</div>
 
       <p v-else-if="error" class="text-sm text-destructive" role="alert">
-        {{ error }}
+        Couldn't load members. Please try again.
       </p>
 
       <template v-else>

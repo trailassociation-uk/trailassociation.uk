@@ -33,6 +33,12 @@ export default defineNuxtConfig({
       ],
     },
   },
+  routeRules: {
+    '/': { prerender: true },
+    '/login': { prerender: true },
+    '/signup': { prerender: true },
+    '/admin/**': { ssr: false },
+  },
   devtools: { enabled: true },
   modules: ['shadcn-nuxt', 'nuxt-auth-utils'],
   shadcn: {

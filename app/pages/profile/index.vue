@@ -12,29 +12,18 @@ definePageMeta({ middleware: "auth" });
 
 const { fetch: refreshSession } = useUserSession();
 
-const profile = ref<{ id: string; email: string; name: string } | null>(null);
-const profileLoading = ref(true);
+const { data: profile, pending: profileLoading, refresh: refreshProfile } = await useAsyncData(
+  "profile",
+  () => $fetch<{ id: string; email: string; name: string }>("/api/profile"),
+);
 
 const detailsForm = reactive({
-  name: "",
-  email: "",
+  name: profile.value?.name ?? "",
+  email: profile.value?.email ?? "",
 });
 const detailsError = ref<string | null>(null);
 const detailsLoading = ref(false);
 const detailsSuccess = ref(false);
-
-
-async function fetchProfile() {
-  try {
-    profile.value = await $fetch("/api/profile");
-    detailsForm.email = profile.value?.email ?? "";
-    detailsForm.name = profile.value?.name ?? "";
-  } catch {
-    profile.value = null;
-  } finally {
-    profileLoading.value = false;
-  }
-}
 
 async function onDetailsSubmit() {
   detailsError.value = null;
@@ -53,7 +42,7 @@ async function onDetailsSubmit() {
     }
 
     await refreshSession();
-    await fetchProfile();
+    await refreshProfile();
     detailsSuccess.value = true;
   } catch (e: unknown) {
     detailsError.value = extractErrorMessage(e);
@@ -61,8 +50,6 @@ async function onDetailsSubmit() {
     detailsLoading.value = false;
   }
 }
-
-onMounted(() => { fetchProfile(); });
 </script>
 
 <template>
