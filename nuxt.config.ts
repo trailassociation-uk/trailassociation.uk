@@ -34,7 +34,9 @@ export default defineNuxtConfig({
     },
   },
   routeRules: {
-    '/': { prerender: true },
+    // ssr (not prerender) so middleware runs — prerendered routes bypass middleware,
+    // which means unknown subdomains would get the static HTML instead of being redirected.
+    '/': { ssr: true },
     '/login': { prerender: true },
     '/signup': { prerender: true },
     '/admin/**': { ssr: false },

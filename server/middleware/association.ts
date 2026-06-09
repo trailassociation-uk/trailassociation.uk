@@ -1,5 +1,6 @@
 import { isReservedSubdomain } from "#shared/reserved-subdomains";
 import {
+  buildApexUrl,
   extractSubdomain,
   getAssociationBySubdomain,
 } from "../utils/association";
@@ -14,20 +15,19 @@ export default defineEventHandler(async (event) => {
   // Apex host — no association context.
   if (!subdomain) return;
 
-  // Platform-reserved subdomains (`api`, `app`, …) belong to the platform, not
-  // an association — leave the association context empty rather than treating
-  // them as an unknown association (404). A reserved slug can never be claimed
-  // (see `validateSubdomain`), so this also short-circuits the DB lookup.
-  if (isReservedSubdomain(subdomain)) return;
+  const redirectToApex = () => sendRedirect(event, buildApexUrl(event, appHost), 302);
+
+  // Platform-reserved subdomains (`api`, `app`, …) can never be claimed, so
+  // redirect rather than serving the apex page on a non-apex host.
+  if (isReservedSubdomain(subdomain)) {
+    return redirectToApex();
+  }
 
   const association = await getAssociationBySubdomain(subdomain);
 
-  // Unknown subdomain — there is no association behind this host.
+  // Unknown subdomain — redirect to the apex rather than serving a 404.
   if (!association) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Association not found",
-    });
+    return redirectToApex();
   }
 
   event.context.association = association;

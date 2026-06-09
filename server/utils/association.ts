@@ -1,4 +1,5 @@
 import type { H3Event } from "h3";
+import { getRequestHost, getRequestProtocol } from "h3";
 import { isReservedSubdomain } from "#shared/reserved-subdomains";
 import type { Association } from "#shared/types/association";
 import { getDb } from "../db";
@@ -60,6 +61,18 @@ export function extractSubdomain(host: string, appHost: string): string | null {
   if (!subdomain) return null;
 
   return subdomain;
+}
+
+/**
+ * Build the absolute URL for the apex host, preserving the port from the
+ * incoming request so local development (e.g. `:3000`) keeps working.
+ */
+export function buildApexUrl(event: H3Event, appHost: string): string {
+  const protocol = getRequestProtocol(event, { xForwardedProto: true });
+  const host = getRequestHost(event, { xForwardedHost: true });
+  const port = host.split(":")[1];
+  const authority = port ? `${appHost}:${port}` : appHost;
+  return `${protocol}://${authority}`;
 }
 
 /**

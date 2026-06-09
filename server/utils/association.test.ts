@@ -1,11 +1,65 @@
+import type { H3Event } from "h3";
 import { describe, expect, it } from "bun:test";
 import {
+  buildApexUrl,
+  buildAssociationUrl,
   extractSubdomain,
   normalizeSubdomain,
   validateSubdomain,
 } from "./association";
 
+function mockEvent(host: string, protocol: "http" | "https" = "http"): H3Event {
+  return {
+    node: {
+      req: {
+        headers: {
+          host,
+          ...(protocol === "https" ? { "x-forwarded-proto": "https" } : {}),
+        },
+      },
+    },
+  } as unknown as H3Event;
+}
+
 const APEX = "trailassociation.uk";
+
+describe("buildApexUrl", () => {
+  it("builds the apex URL", () => {
+    expect(buildApexUrl(mockEvent("trailassociation.uk"), "trailassociation.uk")).toBe(
+      "http://trailassociation.uk",
+    );
+  });
+
+  it("preserves the port from the incoming host", () => {
+    expect(
+      buildApexUrl(mockEvent("test.trailassociation.test:3000"), "trailassociation.test"),
+    ).toBe("http://trailassociation.test:3000");
+  });
+
+  it("uses https when the connection is encrypted", () => {
+    expect(
+      buildApexUrl(mockEvent("trailassociation.uk", "https"), "trailassociation.uk"),
+    ).toBe("https://trailassociation.uk");
+  });
+});
+
+describe("buildAssociationUrl", () => {
+  it("builds the association subdomain URL", () => {
+    expect(
+      buildAssociationUrl(mockEvent("trailassociation.uk"), "peak-district", "trailassociation.uk"),
+    ).toBe("http://peak-district.trailassociation.uk");
+  });
+
+  it("preserves the port from the incoming host", () => {
+    expect(
+      buildAssociationUrl(
+        mockEvent("trailassociation.test:3000"),
+        "peak-district",
+        "trailassociation.test",
+      ),
+    ).toBe("http://peak-district.trailassociation.test:3000");
+  });
+});
 
 describe("extractSubdomain", () => {
   it("returns the subdomain for a host under the apex", () => {
