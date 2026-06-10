@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
       userId: new ObjectId(user.id),
       role: "member",
       status: "pending",
-      joinedAt: now,
+      createdAt: now,
     });
   } catch (err) {
     if (err instanceof MongoServerError && err.code === 11000) {

@@ -9,7 +9,7 @@ export interface Membership {
   associationId: ObjectId;
   role: MembershipRole;
   status: MembershipStatus;
-  joinedAt: Date;
+  createdAt: Date;
 }
 
 declare module "h3" {

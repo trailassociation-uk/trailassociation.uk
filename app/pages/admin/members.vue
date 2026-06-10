@@ -11,7 +11,7 @@ interface Member {
   email: string;
   role: "admin" | "member";
   status: "active" | "pending";
-  joinedAt: string;
+  createdAt: string;
 }
 
 const association = useAssociation();

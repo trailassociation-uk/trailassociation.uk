@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
     userId: createdBy,
     role: "admin",
     status: "active",
-    joinedAt: now,
+    createdAt: now,
   });
 
   return {

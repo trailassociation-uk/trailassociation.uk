@@ -8,7 +8,8 @@ export interface Event {
   type: EventType;
   title: string;
   description?: string;
-  date: Date;
+  startsAt: Date;
+  endsAt?: Date;
   location?: string;
   createdAt: Date;
   createdBy: ObjectId;

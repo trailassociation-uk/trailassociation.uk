@@ -4,7 +4,7 @@ export interface Signup {
   _id: ObjectId;
   eventId: ObjectId;
   userId: ObjectId;
-  signedUpAt: Date;
+  createdAt: Date;
 }
 
 export {};
