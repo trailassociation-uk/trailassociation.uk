@@ -39,7 +39,7 @@ const activeMembers = computed(() => members.value.filter((m) => m.status === "a
 async function approve(member: Member) {
   actioning.value = member.userId;
   try {
-    await $fetch(`/api/associations/${association.value!.id}/members/${member.userId}`, {
+    await $fetch(`/api/associations/${association.value?.id}/members/${member.userId}`, {
       method: "PATCH",
       body: { status: "active" },
     });
@@ -53,7 +53,7 @@ async function approve(member: Member) {
 async function remove(member: Member) {
   actioning.value = member.userId;
   try {
-    await $fetch(`/api/associations/${association.value!.id}/members/${member.userId}`, {
+    await $fetch(`/api/associations/${association.value?.id}/members/${member.userId}`, {
       method: "DELETE",
     });
     members.value = members.value.filter((m) => m.userId !== member.userId);
