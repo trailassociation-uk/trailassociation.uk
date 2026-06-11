@@ -6,7 +6,7 @@ import { requireAdmin } from "../../../utils/membership";
 
 export default defineEventHandler(async (event) => {
   await requireUserSession(event);
-  requireAssociation(event);
+  const association = requireAssociation(event);
   requireAdmin(event);
 
   const db = await getDb();
