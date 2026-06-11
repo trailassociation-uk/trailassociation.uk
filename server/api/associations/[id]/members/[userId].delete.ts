@@ -1,16 +1,13 @@
 import { ObjectId } from "mongodb";
 import type { Membership } from "#shared/types/membership";
 import { getDb } from "../../../../db";
+import { requireAssociation } from "../../../../utils/association";
 import { requireAdmin } from "../../../../utils/membership";
 
 export default defineEventHandler(async (event) => {
   const { user } = await requireUserSession(event);
 
-  const association = event.context.association;
-  if (!association) {
-    throw createError({ statusCode: 404, message: "Association not found" });
-  }
-
+  const association = requireAssociation(event);
   requireAdmin(event);
 
   const { userId } = event.context.params as { userId: string };

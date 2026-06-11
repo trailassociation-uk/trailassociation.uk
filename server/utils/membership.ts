@@ -5,9 +5,25 @@ import { getDb } from "../db";
 
 export function requireAdmin(event: H3Event): void {
   const membership = event.context.membership;
-  if (!membership || membership.role !== "admin") {
+  if (
+    !membership ||
+    membership.status !== "active" ||
+    membership.role !== "admin"
+  ) {
     throw createError({ statusCode: 403, message: "Forbidden" });
   }
+}
+
+/** Throw a 403 unless the current user is an `active` member. */
+export function requireActiveMember(event: H3Event): Membership {
+  const membership = event.context.membership;
+  if (!membership || membership.status !== "active") {
+    throw createError({
+      statusCode: 403,
+      message: "You must be an active member to do this.",
+    });
+  }
+  return membership;
 }
 
 /**

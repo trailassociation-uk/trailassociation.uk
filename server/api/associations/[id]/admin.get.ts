@@ -1,27 +1,28 @@
+import type { Event } from "#shared/types/event";
 import type { Membership } from "#shared/types/membership";
 import { getDb } from "../../../db";
+import { requireAssociation } from "../../../utils/association";
 import { requireAdmin } from "../../../utils/membership";
 
 export default defineEventHandler(async (event) => {
   await requireUserSession(event);
-
-  const association = event.context.association;
-  if (!association) {
-    throw createError({ statusCode: 404, message: "Association not found" });
-  }
-
+  requireAssociation(event);
   requireAdmin(event);
 
   const db = await getDb();
 
-  const [activeCount, pendingCount] = await Promise.all([
+  const [activeCount, pendingCount, upcomingEventCount] = await Promise.all([
     db
       .collection<Membership>("memberships")
       .countDocuments({ associationId: association._id, status: "active" }),
     db
       .collection<Membership>("memberships")
       .countDocuments({ associationId: association._id, status: "pending" }),
+    db.collection<Event>("events").countDocuments({
+      associationId: association._id,
+      startsAt: { $gte: new Date() },
+    }),
   ]);
 
-  return { activeCount, pendingCount };
+  return { activeCount, pendingCount, upcomingEventCount };
 });

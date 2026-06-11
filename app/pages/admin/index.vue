@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { MapPin, Users } from "@lucide/vue";
+import { CalendarDays, MapPin, Users } from "@lucide/vue";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ middleware: "admin" });
 
 const association = useAssociation();
-const membership = useMembership();
 
-type AdminStats = { activeCount: number; pendingCount: number };
+type AdminStats = {
+  activeCount: number;
+  pendingCount: number;
+  upcomingEventCount: number;
+};
 
+const requestFetch = useRequestFetch();
 const { data, pending: loading, error } = await useAsyncData(
   "admin-stats",
-  async (): Promise<AdminStats | null> => {
-    if (!association.value || membership.value?.role !== "admin") {
-      await navigateTo("/");
-      return null;
-    }
-    return $fetch(`/api/associations/${association.value.id}/admin`);
-  },
+  () =>
+    requestFetch<AdminStats>(
+      `/api/associations/${association.value?.id}/admin`,
+    ),
 );
 
 const activeCount = computed(() => data.value?.activeCount ?? 0);
 const pendingCount = computed(() => data.value?.pendingCount ?? 0);
+const upcomingEventCount = computed(() => data.value?.upcomingEventCount ?? 0);
 </script>
 
 <template>
@@ -92,6 +94,29 @@ const pendingCount = computed(() => data.value?.pendingCount ?? 0);
               </div>
               <Button as-child size="sm" variant="outline">
                 <NuxtLink to="/admin/members">Manage</NuxtLink>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader
+            class="flex flex-row items-center justify-between space-y-0 pb-2"
+          >
+            <CardTitle class="text-sm font-medium">Events</CardTitle>
+            <CalendarDays
+              class="size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
+          </CardHeader>
+          <CardContent>
+            <div class="flex items-end justify-between gap-4">
+              <div>
+                <p class="text-2xl font-bold">{{ upcomingEventCount }}</p>
+                <p class="text-xs text-muted-foreground">upcoming events</p>
+              </div>
+              <Button as-child size="sm" variant="outline">
+                <NuxtLink to="/admin/events">Manage</NuxtLink>
               </Button>
             </div>
           </CardContent>

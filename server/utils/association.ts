@@ -97,6 +97,18 @@ export function buildAssociationUrl(
 }
 
 /**
+ * Return the association on the request context, or throw a 404 when the
+ * request is not in an association context (apex / reserved subdomains).
+ */
+export function requireAssociation(event: H3Event): Association {
+  const association = event.context.association;
+  if (!association) {
+    throw createError({ statusCode: 404, message: "Association not found" });
+  }
+  return association;
+}
+
+/**
  * Resolve a subdomain to an `Association`. Returns `null` for unknown
  * subdomains.
  */

@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ middleware: "admin" });
 
 interface Member {
   id: string;
@@ -15,20 +15,17 @@ interface Member {
 }
 
 const association = useAssociation();
-const membership = useMembership();
 const { user } = useUserSession();
 
 const actioning = ref<string | null>(null);
 
+const requestFetch = useRequestFetch();
 const { data, pending: loading, error } = await useAsyncData(
   "admin-members",
-  async (): Promise<{ members: Member[] } | null> => {
-    if (!association.value || membership.value?.role !== "admin") {
-      await navigateTo("/");
-      return null;
-    }
-    return $fetch(`/api/associations/${association.value.id}/members`);
-  },
+  () =>
+    requestFetch<{ members: Member[] }>(
+      `/api/associations/${association.value?.id}/members`,
+    ),
 );
 
 const members = ref<Member[]>(data.value?.members ?? []);

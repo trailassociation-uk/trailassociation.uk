@@ -5,24 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { extractErrorMessage } from "@/lib/utils";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({ middleware: "admin" });
 
 const association = useAssociation();
-const membership = useMembership();
 
-const detailsForm = reactive({ name: "", region: "", description: "" });
+const detailsForm = reactive({
+  name: association.value?.name ?? "",
+  region: association.value?.region ?? "",
+  description: association.value?.description ?? "",
+});
 const detailsSaving = ref(false);
 const detailsError = ref<string | null>(null);
 const detailsSuccess = ref(false);
-
-onMounted(() => {
-  if (!association.value) return navigateTo("/");
-  if (membership.value?.role !== "admin") return navigateTo("/");
-
-  detailsForm.name = association.value.name;
-  detailsForm.region = association.value.region ?? "";
-  detailsForm.description = association.value.description ?? "";
-});
 
 async function saveDetails() {
   detailsError.value = null;

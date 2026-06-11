@@ -12,9 +12,10 @@ interface MyAssociation {
   url: string;
 }
 
+const requestFetch = useRequestFetch();
 const { data, pending, error } = await useAsyncData(
   "my-associations",
-  () => $fetch<{ associations: MyAssociation[] }>("/api/associations/mine"),
+  () => requestFetch<{ associations: MyAssociation[] }>("/api/associations/mine"),
 );
 
 const associations = computed(() => data.value?.associations ?? []);

@@ -12,9 +12,10 @@ definePageMeta({ middleware: "auth" });
 
 const { fetch: refreshSession } = useUserSession();
 
+const requestFetch = useRequestFetch();
 const { data: profile, pending: profileLoading, refresh: refreshProfile } = await useAsyncData(
   "profile",
-  () => $fetch<{ id: string; email: string; name: string }>("/api/profile"),
+  () => requestFetch<{ id: string; email: string; name: string }>("/api/profile"),
 );
 
 const detailsForm = reactive({

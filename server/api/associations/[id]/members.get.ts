@@ -1,16 +1,13 @@
 import type { Membership } from "#shared/types/membership";
 import type { User } from "#shared/types/user";
 import { getDb } from "../../../db";
+import { requireAssociation } from "../../../utils/association";
 import { requireAdmin } from "../../../utils/membership";
 
 export default defineEventHandler(async (event) => {
   await requireUserSession(event);
 
-  const association = event.context.association;
-  if (!association) {
-    throw createError({ statusCode: 404, message: "Association not found" });
-  }
-
+  const association = requireAssociation(event);
   requireAdmin(event);
 
   const db = await getDb();

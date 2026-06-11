@@ -9,6 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  type ApiEvent,
+  EVENT_TYPE_LABELS,
+  formatEventDate,
+} from "@/lib/events";
 
 interface Props {
   id: string;
@@ -19,6 +24,13 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const requestFetch = useRequestFetch();
+const { data: eventsData } = await useAsyncData("upcoming-events", () =>
+  requestFetch<{ events: ApiEvent[] }>("/api/events"),
+);
+
+const events = computed(() => eventsData.value?.events ?? []);
 
 const { user } = useUserSession();
 
@@ -110,7 +122,7 @@ async function requestToJoin() {
           </h2>
         </div>
 
-        <Card>
+        <Card v-if="events.length === 0">
           <CardHeader>
             <CardTitle class="text-base">No upcoming events</CardTitle>
             <CardDescription>
@@ -120,6 +132,33 @@ async function requestToJoin() {
           </CardHeader>
           <CardContent />
         </Card>
+
+        <ul v-else class="space-y-3">
+          <li v-for="event in events" :key="event.id">
+            <NuxtLink :to="`/events/${event.id}`" class="block">
+              <Card class="transition-colors hover:bg-accent/50">
+                <CardHeader>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <CardTitle class="text-base">{{ event.title }}</CardTitle>
+                    <Badge variant="secondary">
+                      {{ EVENT_TYPE_LABELS[event.type] }}
+                    </Badge>
+                  </div>
+                  <CardDescription class="space-y-1">
+                    <span class="flex items-center gap-1.5">
+                      <CalendarDays class="size-3.5 shrink-0" aria-hidden="true" />
+                      {{ formatEventDate(event.startsAt) }}
+                    </span>
+                    <span v-if="event.location" class="flex items-center gap-1.5">
+                      <MapPin class="size-3.5 shrink-0" aria-hidden="true" />
+                      {{ event.location }}
+                    </span>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </NuxtLink>
+          </li>
+        </ul>
       </section>
     </div>
   </main>
