@@ -10,7 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { extractErrorMessage, slugify } from "@/lib/utils";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({
+  middleware: [
+    (to) => {
+      const { user } = useUserSession();
+      if (!user.value) {
+        return navigateTo(`/signup?next=${encodeURIComponent(to.fullPath)}`, { replace: true });
+      }
+    },
+  ],
+});
 
 const { public: { host: appHost } } = useRuntimeConfig();
 

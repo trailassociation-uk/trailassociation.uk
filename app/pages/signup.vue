@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { extractErrorMessage } from "@/lib/utils";
 
 const { fetch: refreshSession } = useUserSession();
+const route = useRoute();
 
 const form = reactive({
   name: "",
@@ -21,6 +22,11 @@ const form = reactive({
 const error = ref<string | null>(null);
 const loading = ref(false);
 
+const next = computed(() => (route.query.next as string) || "/");
+const loginHref = computed(() =>
+  route.query.next ? `/login?next=${encodeURIComponent(next.value)}` : "/login",
+);
+
 async function onSubmit() {
   error.value = null;
   loading.value = true;
@@ -30,7 +36,7 @@ async function onSubmit() {
       body: form,
     });
     await refreshSession();
-    await navigateTo("/");
+    await navigateTo(next.value);
   } catch (e: unknown) {
     error.value = extractErrorMessage(e);
   } finally {
@@ -46,7 +52,7 @@ async function onSubmit() {
         <h1 class="text-2xl font-bold tracking-tight">Create an account</h1>
         <p class="mt-2 text-muted-foreground">
           Already have an account?
-          <NuxtLink to="/login" class="font-medium text-primary underline-offset-4 hover:underline">
+          <NuxtLink :to="loginHref" class="font-medium text-primary underline-offset-4 hover:underline">
             Sign in
           </NuxtLink>
         </p>

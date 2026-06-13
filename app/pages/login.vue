@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { extractErrorMessage } from "@/lib/utils";
 
 const { fetch: refreshSession } = useUserSession();
+const route = useRoute();
 
 const form = reactive({
   email: "",
@@ -17,6 +18,11 @@ const form = reactive({
 
 const error = ref<string | null>(null);
 const loading = ref(false);
+
+const next = computed(() => (route.query.next as string) || "/");
+const signupHref = computed(() =>
+  route.query.next ? `/signup?next=${encodeURIComponent(next.value)}` : "/signup",
+);
 
 async function onSubmit() {
   error.value = null;
@@ -27,7 +33,7 @@ async function onSubmit() {
       body: form,
     });
     await refreshSession();
-    await navigateTo("/");
+    await navigateTo(next.value);
   } catch (e: unknown) {
     error.value = extractErrorMessage(e, "Invalid email or password.");
   } finally {
@@ -43,7 +49,7 @@ async function onSubmit() {
         <h1 class="text-2xl font-bold tracking-tight">Sign in</h1>
         <p class="mt-2 text-muted-foreground">
           Don't have an account?
-          <NuxtLink to="/signup" class="font-medium text-primary underline-offset-4 hover:underline">
+          <NuxtLink :to="signupHref" class="font-medium text-primary underline-offset-4 hover:underline">
             Sign up
           </NuxtLink>
         </p>

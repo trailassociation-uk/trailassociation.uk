@@ -1,6 +1,8 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to) => {
   const { user } = useUserSession();
   if (!user.value) {
-    return navigateTo("/login", { replace: true });
+    return navigateTo(`/login?next=${encodeURIComponent(to.fullPath)}`, {
+      replace: true,
+    });
   }
 });
