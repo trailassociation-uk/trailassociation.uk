@@ -46,7 +46,7 @@ const upcomingEventCount = computed(() => data.value?.upcomingEventCount ?? 0);
 
       <div v-else class="space-y-6">
         <Card>
-          <CardContent class="pt-6">
+          <CardContent>
             <div class="flex items-end justify-between">
               <div class="space-y-4">
                 <div class="flex flex-wrap items-center gap-2">
