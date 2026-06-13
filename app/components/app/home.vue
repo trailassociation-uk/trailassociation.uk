@@ -19,9 +19,9 @@ const features = [
   },
   {
     icon: Users,
-    title: "Members, sorted",
+    title: "Your members",
     description:
-      "Riders ask to join and you approve them, so you always know who's actually on the books.",
+      "Keep a proper register of who's in the group and not just who follows you on Facebook.",
   },
 ];
 </script>
@@ -81,16 +81,13 @@ const features = [
           Ready when you are
         </h2>
         <p class="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Wether starting something new or moving an established group across, you can
+          Whether starting something new or moving an established group across, you can
           be set up in a few minutes. Associations show up in the directory,
           so local riders can find you.
         </p>
-        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div class="mt-8 flex items-center justify-center">
           <Button as-child size="lg">
             <NuxtLink to="/associations/new">Create an association</NuxtLink>
-          </Button>
-          <Button as-child size="lg" variant="outline">
-            <NuxtLink to="/associations">Browse the directory</NuxtLink>
           </Button>
         </div>
       </div>
