@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
         crew, we're your sidekick every step of the way.
       </p>
       <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <Button as="a" href="/" size="lg" variant="default">
+        <Button as="a" href="/associations" size="lg" variant="default">
           Find trails
         </Button>
         <Button as="a" href="/" size="lg" variant="secondary">

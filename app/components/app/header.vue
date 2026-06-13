@@ -40,7 +40,7 @@ const association = useAssociation();
               <NavigationMenuLink href="/">About</NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink href="/">Associations</NavigationMenuLink>
+              <NavigationMenuLink href="/associations">Associations</NavigationMenuLink>
             </NavigationMenuItem>
           </template>
         </NavigationMenuList>
